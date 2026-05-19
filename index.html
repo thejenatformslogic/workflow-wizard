@@ -7,104 +7,42 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; color: #333; min-height: 100vh; }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, #4a5a6b 0%, #3a4a5a 100%);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  }
+  .header { background: linear-gradient(135deg, #4a5a6b 0%, #3a4a5a 100%); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
   .logo-area { display: flex; align-items: center; gap: 14px; }
-  .logo-text { color: white; line-height: 1.1; }
-  .logo-text .firm-name { font-size: 18px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-  .logo-text .firm-sub { font-size: 9px; letter-spacing: 2px; color: #b0bec5; text-transform: uppercase; }
-  .logo-globe {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #90caf9, #1565c0 60%, #0d3b6e);
-    border: 2px solid rgba(255,255,255,0.3);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.2);
-    position: relative; overflow: hidden;
-  }
-  .logo-globe::after {
-    content: ''; position: absolute; top: 8px; left: 6px;
-    width: 14px; height: 8px; border-radius: 50%;
-    background: rgba(255,255,255,0.25); transform: rotate(-30deg);
-  }
   .header-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.25); margin: 0 4px; }
   .header-right { display: flex; align-items: center; gap: 8px; color: #cfd8dc; font-size: 13px; }
   .hamburger { font-size: 20px; color: white; cursor: pointer; margin-right: 8px; }
-
-  /* MAIN */
-  .main { max-width: 980px; margin: 0 auto; padding: 32px 24px 60px; }
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 60px; }
   .page-title { font-size: 22px; font-weight: 600; color: #2d3748; margin-bottom: 6px; }
   .page-sub { font-size: 14px; color: #718096; margin-bottom: 32px; }
-
-  /* WIZARD CARD */
-  .wizard-card {
-    background: white; border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    padding: 28px 32px; margin-bottom: 24px;
-  }
-
-  /* STEP FLOW */
+  .wizard-card { background: white; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 28px 32px; margin-bottom: 24px; }
   .step-flow { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; min-height: 60px; }
   .step-group { display: flex; flex-direction: column; gap: 8px; }
   .step-label { font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
   .step-buttons { display: flex; flex-direction: column; gap: 7px; }
   .arrow-col { display: flex; align-items: center; padding: 0 10px; padding-top: 26px; }
   .arrow-btn { width: 32px; height: 32px; border-radius: 4px; background: #4a90d9; border: none; color: white; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-
-  /* Buttons */
-  .btn-green {
-    background: #5cb85c; color: white; border: none; border-radius: 4px;
-    padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
-    min-width: 130px; text-align: center;
-    transition: background 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+  .btn-green { background: #5cb85c; color: white; border: none; border-radius: 4px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; min-width: 130px; text-align: center; transition: background 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   .btn-green:hover { background: #4cae4c; }
-  .btn-green.active { background: #3d8b3d; box-shadow: 0 0 0 3px rgba(92,184,92,0.35), 0 2px 4px rgba(0,0,0,0.15); }
+  .btn-green.active { background: #3d8b3d; box-shadow: 0 0 0 3px rgba(92,184,92,0.35); }
   .btn-green.inactive { opacity: 0.45; cursor: default; }
-
-  .btn-blue {
-    background: #4a90d9; color: white; border: none; border-radius: 4px;
-    padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer;
-    min-width: 180px; text-align: center;
-    transition: background 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+  .btn-blue { background: #4a90d9; color: white; border: none; border-radius: 4px; padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer; min-width: 200px; text-align: center; transition: background 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   .btn-blue:hover { background: #357abd; }
-  .btn-blue.active { background: #2568a8; box-shadow: 0 0 0 3px rgba(74,144,217,0.35), 0 2px 4px rgba(0,0,0,0.15); }
+  .btn-blue.active { background: #2568a8; box-shadow: 0 0 0 3px rgba(74,144,217,0.35); }
   .btn-blue.inactive { opacity: 0.45; cursor: default; }
-
-  /* TRIGGER SECTION */
   .trigger-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e2e8f0; animation: fadeIn 0.25s ease; }
   .trigger-title { font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 14px; }
   .trigger-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .trigger-q { font-size: 13px; color: #4a5568; min-width: 280px; font-weight: 500; }
   .trigger-options { display: flex; gap: 7px; flex-wrap: wrap; }
-  .btn-trigger {
-    background: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0;
-    border-radius: 4px; padding: 6px 14px; font-size: 12px; font-weight: 500;
-    cursor: pointer; transition: all 0.15s;
-  }
+  .btn-trigger { background: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; border-radius: 4px; padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
   .btn-trigger:hover { background: #e2e8f0; }
   .btn-trigger.active { background: #4a90d9; color: white; border-color: #4a90d9; }
-
-  /* RESULT */
   .result-card { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e2e8f0; animation: fadeIn 0.3s ease; }
   .result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .result-title { font-size: 16px; font-weight: 700; color: #1a2540; }
-  .result-path { font-size: 12px; color: #a0aec0; }
-  .result-note {
-    font-size: 12px; color: #718096; margin-bottom: 14px;
-    padding: 8px 12px; background: #f7fafc;
-    border-radius: 4px; border-left: 3px solid #4a90d9;
-  }
+  .result-note { font-size: 12px; color: #718096; margin-bottom: 14px; padding: 8px 12px; background: #f7fafc; border-radius: 4px; border-left: 3px solid #4a90d9; }
   .result-section-label { font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; margin-top: 16px; }
-
-  /* Stage buttons */
   .stage-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
   .stage-btn { padding: 6px 12px; border-radius: 3px; font-size: 11px; font-weight: 600; border: none; cursor: default; white-space: nowrap; }
   .stage-started    { background: #718096; color: white; }
@@ -117,25 +55,18 @@
   .stage-followup   { background: #2980b9; color: white; }
   .stage-final      { background: #2c3e50; color: white; }
   .stage-arrow      { color: #a0aec0; font-size: 12px; }
-
-  /* Assignment table */
   .assign-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
   .assign-table th { text-align: left; padding: 6px 10px; background: #f7fafc; color: #718096; font-weight: 600; font-size: 11px; border-bottom: 1px solid #e2e8f0; }
   .assign-table td { padding: 6px 10px; border-bottom: 1px solid #edf2f7; color: #4a5568; vertical-align: top; }
   .assign-table tr:last-child td { border-bottom: none; }
   .tag { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 500; }
-  .tag-bo     { background: #e3f2fd; color: #1565c0; }
-  .tag-fo     { background: #e8f5e9; color: #2e7d32; }
-  .tag-owner  { background: #fff8e1; color: #f57f17; }
-  .tag-tbd    { background: #f5f5f5; color: #9e9e9e; }
-  .tag-none   { background: #ffebee; color: #c62828; }
-
-  /* Reset */
+  .tag-bo   { background: #e3f2fd; color: #1565c0; }
+  .tag-fo   { background: #e8f5e9; color: #2e7d32; }
+  .tag-owner{ background: #fff8e1; color: #f57f17; }
+  .tag-tbd  { background: #f5f5f5; color: #9e9e9e; }
   .reset-link { font-size: 12px; color: #a0aec0; cursor: pointer; text-decoration: underline; margin-top: 16px; display: inline-block; }
   .reset-link:hover { color: #718096; }
-
   .hidden { display: none !important; }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
@@ -146,14 +77,11 @@
     <span class="hamburger">☰</span>
     <div class="logo-area">
       <svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
-        <!-- Generic shield/emblem logo -->
         <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
         <circle cx="20" cy="20" r="14" fill="rgba(255,255,255,0.12)"/>
-        <!-- Globe lines -->
         <ellipse cx="20" cy="20" rx="14" ry="8" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
         <line x1="6" y1="20" x2="34" y2="20" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
         <line x1="20" y1="6" x2="20" y2="34" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-        <!-- Wordmark placeholder bars -->
         <rect x="44" y="12" width="50" height="6" rx="2" fill="rgba(255,255,255,0.7)"/>
         <rect x="44" y="23" width="34" height="4" rx="2" fill="rgba(255,255,255,0.35)"/>
       </svg>
@@ -169,12 +97,9 @@
 <div class="main">
   <div class="page-title">New Account Workflow</div>
   <div class="page-sub">Select the relationship type and transaction to begin.</div>
-
   <div class="wizard-card">
     <div class="step-flow">
-
-      <!-- Step 1 -->
-      <div class="step-group" id="step1-group">
+      <div class="step-group">
         <div class="step-label">Relationship Type</div>
         <div class="step-buttons">
           <button class="btn-green" id="btn-bd"  onclick="selectRel('bd')">Broker / Dealer</button>
@@ -182,61 +107,49 @@
           <button class="btn-green" id="btn-ins" onclick="selectRel('ins')">Insurance</button>
         </div>
       </div>
-
       <div class="arrow-col" id="arrow1" style="opacity:0.25"><div class="arrow-btn">›</div></div>
-
-      <!-- Step 2 -->
       <div class="step-group">
         <div class="step-label">Transaction Type</div>
         <div class="step-buttons" id="product-buttons">
           <span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select relationship type first</span>
         </div>
       </div>
-
       <div class="arrow-col" id="arrow2" style="opacity:0.25"><div class="arrow-btn">›</div></div>
-
-      <!-- Step 3 -->
       <div class="step-group">
-        <div class="step-label" id="step3-label">Details</div>
+        <div class="step-label">Details</div>
         <div id="step3-content" style="font-size:12px;color:#a0aec0;padding-top:8px;">Select transaction type first</div>
       </div>
-
     </div>
-
-    <!-- Trigger questions -->
     <div id="trigger-section" class="trigger-section hidden">
       <div class="trigger-title">Additional Information Required</div>
       <div id="trigger-questions"></div>
     </div>
-
-    <!-- Result -->
     <div id="result-section" class="result-card hidden"></div>
-
     <span class="reset-link" onclick="resetWizard()">↺ Start over</span>
   </div>
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────
+// ─── STATE ───────────────────────────────────────────────────────────────────
 let state = { rel: null, product: null, triggers: {} };
 
-// ─── PRODUCTS ────────────────────────────────────
+// ─── PRODUCTS ────────────────────────────────────────────────────────────────
 const products = {
-  bd:  [
-    { id:'bd-change',      label:'Broker/Dealer Change' },
-    { id:'bd-altinv',      label:'Alternative Investment' },
-    { id:'bd-mutfund',     label:'Mutual Fund' },
-    { id:'bd-va',          label:'Variable Annuity / RILA / VUL' },
-    { id:'bd-brokerage',   label:'Pershing Brokerage' },
-    { id:'bd-529',         label:'529 Plan' },
-    { id:'bd-other',       label:'Other Business' },
+  bd: [
+    { id:'bd-change',    label:'Broker/Dealer Change' },
+    { id:'bd-altinv',    label:'Alternative Investment' },
+    { id:'bd-mutfund',   label:'Mutual Fund' },
+    { id:'bd-va',        label:'Variable Annuity / RILA / VUL' },
+    { id:'bd-brokerage', label:'Pershing Brokerage' },
+    { id:'bd-529',       label:'529 Plan' },
+    { id:'bd-other',     label:'Other Business' },
   ],
   adv: [
-    { id:'adv-amp',        label:'AFP Advisor Managed (AMP)' },
-    { id:'adv-tpmm-uma',   label:'TPMM / UMA' },
-    { id:'adv-tpmm-sub',   label:'TPMM / Sub-Advisory' },
-    { id:'adv-tamp',       label:'TAMP' },
-    { id:'adv-fp',         label:'Financial Planning' },
+    { id:'adv-amp',      label:'AFP Advisor Managed (AMP)' },
+    { id:'adv-tpmm-uma', label:'TPMM / UMA' },
+    { id:'adv-tpmm-sub', label:'TPMM / Sub-Advisory' },
+    { id:'adv-tamp',     label:'TAMP' },
+    { id:'adv-fp',       label:'Financial Planning' },
   ],
   ins: [
     { id:'ins-imo',        label:'New Account (Through IMO)' },
@@ -246,7 +159,7 @@ const products = {
   ]
 };
 
-// ─── TRIGGER DEFINITIONS ─────────────────────────
+// ─── TRIGGER DEFINITIONS ─────────────────────────────────────────────────────
 const triggerDefs = {
   'bd-change': [
     { id:'naf', question:'Does this include a New Account Form (NAF)?', options:['Yes','No'] },
@@ -264,22 +177,22 @@ const triggerDefs = {
   ],
   'bd-brokerage': [
     { id:'options', question:'Is there an options agreement on file?', options:['Yes','No'] },
-    { id:'funding', question:'Funding type?', options:['Transfer','All Others'] },
+    { id:'funding',  question:'Funding type?', options:['Transfer','All Others'] },
   ],
-  'adv-amp':      advCustodianTriggers(),
-  'adv-tpmm-uma': advCustodianTriggers(true),
-  'adv-tpmm-sub': advCustodianTriggers(),
+  'adv-amp':      advTriggers(),
+  'adv-tpmm-uma': advTriggers(true),
+  'adv-tpmm-sub': advTriggers(),
   'adv-tamp': [
     { id:'custodian', question:'Where is the account custodied?', options:['Schwab (Adhesion)','All Others'] },
   ],
 };
 
-function advCustodianTriggers(includeGoldman = false) {
-  const custodians = ['Pershing','Schwab','Axos'];
-  if (includeGoldman) custodians.push('Goldman Sachs');
-  custodians.push('Fidelity / Pontera / ByAllAccounts','Jackson','Other');
+function advTriggers(includeGoldman) {
+  const custs = ['Pershing','Schwab','Axos'];
+  if (includeGoldman) custs.push('Goldman Sachs');
+  custs.push('Fidelity / Pontera / ByAllAccounts','Jackson','Other');
   return [
-    { id:'custodian', question:'Where is the account custodied?', options: custodians },
+    { id:'custodian', question:'Where is the account custodied?', options: custs },
     { id:'options',   question:'Is there an options agreement on file?', options:['Yes','No'],
       showWhen:{ custodian:['Pershing'] } },
     { id:'funding',   question:'Funding type?', options:['Transfer','All Others'],
@@ -287,93 +200,130 @@ function advCustodianTriggers(includeGoldman = false) {
   ];
 }
 
-// ─── STAGE HELPERS ───────────────────────────────
-function stg(label, cls) { return { label, cls }; }
-const ST  = stg('Started',          'stage-started');
-const BOR = stg('BO Review',        'stage-review');
-const PR1 = stg('Principal Review 1','stage-approval');
-const OPA = stg('Options Principal Approval','stage-approval');
-const MPA = stg('Municipal Principal Approval','stage-approval');
-const BOW = stg('BO Wire Approval', 'stage-wire');
-const SIG = stg('For-Signature',    'stage-sig');
-const SGN = stg('Signed',           'stage-sig');
-const FOP = stg('FO Processing',    'stage-processing');
-const BOP = stg('BO Processing',    'stage-processing');
-const OPS = stg('Options Set Up',   'stage-processing');
-const BIL = stg('Billing Set Up',   'stage-billing');
-const FIN = stg('Finalized',        'stage-final');
-const BDQ = stg('BD Change Follow-up','stage-followup');
-const CMQ = stg('Cash Mgmt Follow-up','stage-followup');
-const PAQ = stg('Pershing Acct Follow-up','stage-followup');
-const PAL = stg('Pershing Alt Follow-up','stage-followup');
-const AXQ = stg('Axos Follow-up',   'stage-followup');
-const SCQ = stg('Schwab Follow-up', 'stage-followup');
-const TRQ = stg('Transfer Follow-up','stage-followup');
+// ─── STAGE & ASSIGNMENT CONSTANTS ────────────────────────────────────────────
+// Stages
+const ST  = { label:'Started',                cls:'stage-started'    };
+const SIG = { label:'For-Signature',          cls:'stage-sig'        };
+const SGN = { label:'Signed',                 cls:'stage-sig'        };
+const BOR = { label:'Back Office Review',     cls:'stage-review'     };
+const PR1 = { label:'Principal Review 1',     cls:'stage-approval'   };
+const OPA = { label:'Options Principal Review',cls:'stage-approval'  };
+const MPA = { label:'Municipal Principal Review',cls:'stage-approval'};
+const BOW = { label:'BO Wire Approval',       cls:'stage-wire'       };
+const FOP = { label:'FO Processing',          cls:'stage-processing' };
+const BOP = { label:'BO Processing',          cls:'stage-processing' };
+const OPS = { label:'Options Set Up',         cls:'stage-processing' };
+const BIL = { label:'Billing Set Up',         cls:'stage-billing'    };
+const FIN = { label:'Finalized',              cls:'stage-final'      };
+const BDQ = { label:'BD Change Follow-up',    cls:'stage-followup'   };
+const CMQ = { label:'Cash Mgmt Follow-up',    cls:'stage-followup'   };
+const PAQ = { label:'Pershing Acct Follow-up',cls:'stage-followup'   };
+const PAL = { label:'Pershing Alt Follow-up', cls:'stage-followup'   };
+const AXQ = { label:'Axos Follow-up',         cls:'stage-followup'   };
+const SCQ = { label:'Schwab Follow-up',       cls:'stage-followup'   };
+const TRQ = { label:'Transfer Follow-up',     cls:'stage-followup'   };
 
-// ─── ASSIGNMENT HELPERS ──────────────────────────
-function asgn(stage, assigned, tag) { return { stage, assigned, tag }; }
-const A_STARTED = asgn('Started',             'WF Creator (Rep)',        'tag-owner');
-const A_BOR     = asgn('BO Review',           'Back Office',             'tag-bo');
-const A_FOP     = asgn('FO Processing',       'Front Office',            'tag-fo');
-const A_BOP1    = asgn('BO Processing',       'Back Office (1st)',        'tag-bo');
-const A_FOP2    = asgn('FO Processing',       'Front Office (2nd)',       'tag-fo');
-const A_PR1     = asgn('Principal Review 1',  'Designated Supervisor',   'tag-tbd');
-const A_OPA     = asgn('Options Principal Approval','Options Principal', 'tag-tbd');
-const A_MPA     = asgn('Municipal Principal Approval','Municipal Principal','tag-tbd');
-const A_BOW     = asgn('BO Wire Approval',    'Back Office',             'tag-bo');
-const A_SIG     = asgn('For-Signature',       'WF Creator',              'tag-owner');
-const A_SGN     = asgn('Signed',              'WF Creator',              'tag-owner');
-const A_OPS     = asgn('Options Set Up',      'TBD',                     'tag-tbd');
-const A_BIL     = asgn('Billing Set Up',      'TBD',                     'tag-tbd');
-const A_BDQ     = asgn('BD Change Follow-up', 'BD Change Queue',         'tag-bo');
-const A_CMQ     = asgn('Cash Mgmt Follow-up', 'Cash Management Queue',   'tag-bo');
-const A_PAQ     = asgn('Pershing Acct Follow-up','Pershing Account Queue','tag-bo');
-const A_PAL     = asgn('Pershing Alt Follow-up','Pershing Alt Queue',    'tag-bo');
-const A_AXQ     = asgn('Axos Follow-up',      'Axos Queue',              'tag-bo');
-const A_SCQ     = asgn('Schwab Follow-up',    'Schwab Queue',            'tag-bo');
-const A_TRQ     = asgn('Transfer Follow-up',  'Transfer Queue',          'tag-bo');
+// Assignments
+const AA_ST   = { stage:'Started',                   assigned:'WF Creator (Rep)',        tag:'tag-owner' };
+const AA_SIG  = { stage:'For-Signature',              assigned:'WF Creator',              tag:'tag-owner' };
+const AA_SGN  = { stage:'Signed',                     assigned:'WF Creator',              tag:'tag-owner' };
+const AA_BOR  = { stage:'Back Office Review',         assigned:'Back Office',             tag:'tag-bo'    };
+const AA_PR1  = { stage:'Principal Review 1',         assigned:'Designated Supervisor',   tag:'tag-tbd'   };
+const AA_OPA  = { stage:'Options Principal Review',   assigned:'Options Principal',       tag:'tag-tbd'   };
+const AA_MPA  = { stage:'Municipal Principal Review', assigned:'Municipal Principal',     tag:'tag-tbd'   };
+const AA_BOW  = { stage:'BO Wire Approval',           assigned:'Back Office',             tag:'tag-bo'    };
+const AA_FOP  = { stage:'FO Processing',              assigned:'Front Office',            tag:'tag-fo'    };
+const AA_BOP  = { stage:'BO Processing',              assigned:'Back Office',             tag:'tag-bo'    };
+const AA_OPS  = { stage:'Options Set Up',             assigned:'TBD',                     tag:'tag-tbd'   };
+const AA_BIL  = { stage:'Billing Set Up',             assigned:'TBD',                     tag:'tag-tbd'   };
+const AA_BDQ  = { stage:'BD Change Follow-up',        assigned:'BD Change Queue',         tag:'tag-bo'    };
+const AA_CMQ  = { stage:'Cash Mgmt Follow-up',        assigned:'Cash Management Queue',   tag:'tag-bo'    };
+const AA_PAQ  = { stage:'Pershing Acct Follow-up',    assigned:'Pershing Account Queue',  tag:'tag-bo'    };
+const AA_PAL  = { stage:'Pershing Alt Follow-up',     assigned:'Pershing Alt Queue',      tag:'tag-bo'    };
+const AA_AXQ  = { stage:'Axos Follow-up',             assigned:'Axos Queue',              tag:'tag-bo'    };
+const AA_SCQ  = { stage:'Schwab Follow-up',           assigned:'Schwab Queue',            tag:'tag-bo'    };
+const AA_TRQ  = { stage:'Transfer Follow-up',         assigned:'Transfer Queue',          tag:'tag-bo'    };
 
-// ─── WORKFLOW RESOLVER ───────────────────────────
+// ─── WORKFLOW BUILDER HELPERS ─────────────────────────────────────────────────
+// Standard path WITH signatures (most workflows):
+// Started → For-Signature → Signed → BO Review → [approval] → [processing] → [follow-ups] → Finalized
+function wf(name, approvalStage, approvalAssign, processingStages, processingAssigns, followupStages, followupAssigns, note) {
+  return {
+    name,
+    stages:      [ST,  SIG,    SGN,    BOR,    approvalStage,  ...processingStages,  ...followupStages,  FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, approvalAssign, ...processingAssigns, ...followupAssigns],
+    note: note || ''
+  };
+}
+
+// Path WITHOUT signatures (Insurance IMO only):
+// Started → [approval] → [processing] → Finalized
+function wfNoSig(name, approvalStage, approvalAssign, processingStages, processingAssigns, note) {
+  return {
+    name,
+    stages:      [ST, approvalStage, ...processingStages, FIN],
+    assignments: [AA_ST, approvalAssign, ...processingAssigns],
+    note: note || ''
+  };
+}
+
+// ─── WORKFLOW RESOLVER ────────────────────────────────────────────────────────
 function resolveWorkflow() {
   const p = state.product;
   const t = state.triggers;
 
-  // ══ BROKER/DEALER ══════════════════════════════
+  // ══ BROKER / DEALER ══════════════════════════════════════════════════════════
 
   if (p === 'bd-change') {
     if (!t.naf) return null;
     if (t.naf === 'No') return {
       name: 'BD — Broker/Dealer Change',
-      stages: [ST, BOR, FOP, BDQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_FOP, A_BDQ],
+      stages:      [ST, SIG, SGN, BOR, FOP, BDQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_FOP, AA_BDQ],
       note: 'No approval stage required.'
     };
     return {
       name: 'BD — Broker/Dealer Change w/NAF',
-      stages: [ST, SIG, SGN, BOR, PR1, FOP, BDQ, FIN],
-      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_FOP, A_BDQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BDQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BDQ],
       note: 'Designated Supervisor approval required.'
     };
   }
 
   if (p === 'bd-altinv') {
     if (!t.custodian) return null;
-    if (t.custodian !== 'Axos' && !t.funding) return null;
     const wire = t.funding === 'Wire from Pershing Account';
-    const followup = t.custodian === 'Pershing' ? PAL : t.custodian === 'Axos' ? AXQ : null;
-    const followupA = t.custodian === 'Pershing' ? A_PAL : t.custodian === 'Axos' ? A_AXQ : null;
-    if (wire) return {
-      name: `BD — Alternative Investment (${t.custodian} · Wire from Pershing)`,
-      stages: [ST, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_BOW, A_BOP1, A_FOP2, A_CMQ],
+    // Axos — no funding question, resolves immediately
+    if (t.custodian === 'Axos') return {
+      name: 'BD — Alternative Investment (Axos)',
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, AXQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP, AA_AXQ],
+      note: 'BO Processing before FO Processing.'
+    };
+    if (!t.funding) return null;
+    if (t.custodian === 'Pershing' && wire) return {
+      name: 'BD — Alternative Investment (Pershing · Wire from Pershing)',
+      stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
       note: 'BO Wire Approval added. BO Processing before FO Processing.'
     };
-    const stages = followup ? [ST, BOR, PR1, BOP, FOP, followup, FIN] : [ST, BOR, PR1, BOP, FOP, FIN];
-    const assigns = followupA ? [A_STARTED, A_BOR, A_PR1, A_BOP1, A_FOP2, followupA] : [A_STARTED, A_BOR, A_PR1, A_BOP1, A_FOP2];
-    return {
-      name: `BD — Alternative Investment (${t.custodian})`,
-      stages, assignments: assigns,
+    if (t.custodian === 'Pershing' && !wire) return {
+      name: 'BD — Alternative Investment (Pershing)',
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, PAL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP, AA_PAL],
       note: 'BO Processing before FO Processing.'
+    };
+    if (wire) return {
+      name: 'BD — Alternative Investment (All Others · Wire from Pershing)',
+      stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
+      note: 'BO Wire Approval added. BO Processing before FO Processing.'
+    };
+    return {
+      name: 'BD — Alternative Investment (All Others)',
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP],
+      note: 'BO Processing before FO Processing. No custodian-specific follow-up queue.'
     };
   }
 
@@ -381,14 +331,14 @@ function resolveWorkflow() {
     if (!t.funding) return null;
     if (t.funding === 'Wire from Pershing Account') return {
       name: 'BD — Mutual Fund (Wire from Pershing)',
-      stages: [ST, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_BOW, A_BOP1, A_FOP2, A_CMQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
       note: 'BO Wire Approval added. BO Processing before FO Processing.'
     };
     return {
       name: 'BD — Mutual Fund',
-      stages: [ST, BOR, PR1, FOP, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_FOP],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
       note: ''
     };
   }
@@ -397,63 +347,63 @@ function resolveWorkflow() {
     if (!t.funding) return null;
     if (t.funding === 'Wire from Pershing Account') return {
       name: 'BD — Variable Annuity / RILA / VUL (Wire from Pershing)',
-      stages: [ST, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_BOW, A_BOP1, A_FOP2, A_CMQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
       note: 'BO Wire Approval added. BO Processing before FO Processing.'
     };
     return {
       name: 'BD — Variable Annuity / RILA / VUL',
-      stages: [ST, BOR, PR1, FOP, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_FOP],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
       note: ''
     };
   }
 
   if (p === 'bd-brokerage') {
     if (!t.options || !t.funding) return null;
-    const hasOpts    = t.options  === 'Yes';
-    const hasTransfer = t.funding === 'Transfer';
-    if (hasOpts && hasTransfer) return {
+    const hasOpts = t.options === 'Yes';
+    const hasXfer = t.funding === 'Transfer';
+    if (hasOpts && hasXfer) return {
       name: 'BD — Pershing Brokerage (Options + Transfer)',
-      stages: [ST, BOR, OPA, OPS, BOP, PAQ, TRQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_OPA, A_OPS, asgn('BO Processing','Back Office','tag-bo'), A_PAQ, A_TRQ],
+      stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, PAQ, TRQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_OPA, AA_OPS, AA_BOP, AA_PAQ, AA_TRQ],
       note: 'Options Set Up owner TBD. Two follow-up queues.'
     };
     if (hasOpts) return {
       name: 'BD — Pershing Brokerage (Options, No Transfer)',
-      stages: [ST, BOR, OPA, OPS, BOP, PAQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_OPA, A_OPS, asgn('BO Processing','Back Office','tag-bo'), A_PAQ],
+      stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, PAQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_OPA, AA_OPS, AA_BOP, AA_PAQ],
       note: 'Options Set Up owner TBD.'
     };
-    if (hasTransfer) return {
+    if (hasXfer) return {
       name: 'BD — Pershing Brokerage (Transfer, No Options)',
-      stages: [ST, BOR, PR1, BOP, PAQ, TRQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, asgn('BO Processing','Back Office','tag-bo'), A_PAQ, A_TRQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, PAQ, TRQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_PAQ, AA_TRQ],
       note: 'Two follow-up queues.'
     };
     return {
       name: 'BD — Pershing Brokerage (No Options, No Transfer)',
-      stages: [ST, BOR, PR1, BOP, PAQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, asgn('BO Processing','Back Office','tag-bo'), A_PAQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, PAQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_PAQ],
       note: ''
     };
   }
 
   if (p === 'bd-529') return {
     name: 'BD — 529 Plan',
-    stages: [ST, BOR, MPA, FOP, FIN],
-    assignments: [A_STARTED, A_BOR, A_MPA, A_FOP],
+    stages:      [ST, SIG, SGN, BOR, MPA, FOP, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_MPA, AA_FOP],
     note: 'Municipal Principal approval required.'
   };
 
   if (p === 'bd-other') return {
     name: 'BD — Other Business',
-    stages: [ST, BOR, PR1, FOP, FIN],
-    assignments: [A_STARTED, A_BOR, A_PR1, A_FOP],
+    stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
     note: ''
   };
 
-  // ══ ADVISORY ═══════════════════════════════════
+  // ══ ADVISORY ═════════════════════════════════════════════════════════════════
 
   if (['adv-amp','adv-tpmm-uma','adv-tpmm-sub'].includes(p)) {
     if (!t.custodian) return null;
@@ -461,74 +411,74 @@ function resolveWorkflow() {
 
     if (t.custodian === 'Pershing') {
       if (!t.options || !t.funding) return null;
-      const hasOpts     = t.options  === 'Yes';
-      const hasTransfer = t.funding  === 'Transfer';
-      if (hasOpts && hasTransfer) return {
+      const hasOpts = t.options === 'Yes';
+      const hasXfer = t.funding === 'Transfer';
+      if (hasOpts && hasXfer) return {
         name: `Advisory — ${prog} Pershing (Options + Transfer)`,
-        stages: [ST, BOR, OPA, OPS, BOP, BIL, PAQ, TRQ, FIN],
-        assignments: [A_STARTED, A_BOR, A_OPA, A_OPS, asgn('BO Processing','Back Office','tag-bo'), A_BIL, A_PAQ, A_TRQ],
+        stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, BIL, PAQ, TRQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_OPA, AA_OPS, AA_BOP, AA_BIL, AA_PAQ, AA_TRQ],
         note: 'Options Set Up + Billing Set Up owners TBD. Two follow-up queues.'
       };
       if (hasOpts) return {
         name: `Advisory — ${prog} Pershing (Options, No Transfer)`,
-        stages: [ST, BOR, OPA, OPS, BOP, BIL, PAQ, FIN],
-        assignments: [A_STARTED, A_BOR, A_OPA, A_OPS, asgn('BO Processing','Back Office','tag-bo'), A_BIL, A_PAQ],
+        stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, BIL, PAQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_OPA, AA_OPS, AA_BOP, AA_BIL, AA_PAQ],
         note: 'Options Set Up + Billing Set Up owners TBD.'
       };
-      if (hasTransfer) return {
+      if (hasXfer) return {
         name: `Advisory — ${prog} Pershing (No Options, Transfer)`,
-        stages: [ST, BOR, PR1, FOP, BIL, PAQ, TRQ, FIN],
-        assignments: [A_STARTED, A_BOR, A_PR1, A_FOP, A_BIL, A_PAQ, A_TRQ],
+        stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, PAQ, TRQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_PAQ, AA_TRQ],
         note: 'Billing Set Up owner TBD. Two follow-up queues.'
       };
       return {
         name: `Advisory — ${prog} Pershing (No Options, No Transfer)`,
-        stages: [ST, BOR, PR1, FOP, BIL, PAQ, FIN],
-        assignments: [A_STARTED, A_BOR, A_PR1, A_FOP, A_BIL, A_PAQ],
+        stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, PAQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_PAQ],
         note: 'Billing Set Up owner TBD.'
       };
     }
 
     if (t.custodian === 'Schwab') return {
       name: `Advisory — ${prog} Schwab`,
-      stages: [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
-      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL, A_SCQ],
-      note: 'Includes signatures stage. Billing Set Up owner TBD.'
+      stages:      [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL, AA_SCQ],
+      note: 'Billing Set Up owner TBD.'
     };
 
     if (t.custodian === 'Axos') return {
       name: `Advisory — ${prog} Axos`,
-      stages: [ST, BOR, PR1, FOP, BIL, AXQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_FOP, A_BIL, A_AXQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, AXQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_AXQ],
       note: 'Billing Set Up owner TBD.'
     };
 
     if (t.custodian === 'Goldman Sachs') return {
       name: `Advisory — ${prog} Goldman Sachs`,
-      stages: [ST, BOR, PR1, FOP, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_FOP],
-      note: 'Lapiana office only. No billing set up.'
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+      note: 'Lapiana office only. No Billing Set Up.'
     };
 
     if (t.custodian === 'Fidelity / Pontera / ByAllAccounts') return {
       name: `Advisory — ${prog} Held Away Asset`,
-      stages: [ST, SIG, SGN, BOR, PR1, BIL, FIN],
-      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL],
-      note: 'Includes signatures stage. Billing Set Up owner TBD.'
+      stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
+      note: 'Billing Set Up owner TBD.'
     };
 
     if (t.custodian === 'Jackson') return {
       name: `Advisory — ${prog} Variable Annuity (Jackson)`,
-      stages: [ST, SIG, SGN, BOR, PR1, BIL, FIN],
-      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL],
-      note: 'Includes signatures stage. Billing Set Up owner TBD.'
+      stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
+      note: 'Billing Set Up owner TBD.'
     };
 
     if (t.custodian === 'Other') return {
       name: `Advisory — ${prog} Variable Annuity (Other)`,
-      stages: [ST, BOR, PR1, FOP, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_FOP],
-      note: 'Nationwide / Prudential / MyRock. No billing set up.'
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+      note: 'Nationwide / Prudential / MyRock.'
     };
 
     return null;
@@ -538,66 +488,65 @@ function resolveWorkflow() {
     if (!t.custodian) return null;
     if (t.custodian === 'Schwab (Adhesion)') return {
       name: 'Advisory — TAMP Adhesion (Schwab)',
-      stages: [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
-      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL, A_SCQ],
-      note: 'Includes signatures stage. Billing Set Up owner TBD.'
+      stages:      [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL, AA_SCQ],
+      note: 'Billing Set Up owner TBD.'
     };
     return {
       name: 'Advisory — TAMP (All Others)',
-      stages: [ST, BOR, PR1, FOP, FIN],
-      assignments: [A_STARTED, A_BOR, A_PR1, A_FOP],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
       note: 'Assetmark / Geowealth / OPS.'
     };
   }
 
   if (p === 'adv-fp') return {
     name: 'Advisory — Financial Planning',
-    stages: [ST, BOR, PR1, BIL, FIN],
-    assignments: [A_STARTED, A_BOR, A_PR1, A_BIL],
+    stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
     note: 'No FO or BO Processing stage. Billing Set Up owner TBD.'
   };
 
-  // ══ INSURANCE ══════════════════════════════════
+  // ══ INSURANCE ════════════════════════════════════════════════════════════════
 
   if (p === 'ins-imo') return {
     name: 'Insurance — New Account (Through IMO)',
-    stages: [ST, PR1, FOP, FIN],
-    assignments: [A_STARTED, A_PR1, A_FOP],
-    note: 'No BO Review. No signatures stage. Documents generated through IMO.'
+    stages:      [ST, PR1, FOP, FIN],
+    assignments: [AA_ST, AA_PR1, AA_FOP],
+    note: 'No signatures stage. No BO Review. Documents generated through IMO.'
   };
 
   if (p === 'ins-docs') return {
     name: 'Insurance — New Account (Docs Generated)',
-    stages: [ST, SIG, SGN, BOR, PR1, FOP, FIN],
-    assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_FOP],
-    note: 'Includes BO Review and signatures stage.'
+    stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+    note: ''
   };
 
   if (p === 'ins-change') return {
     name: 'Insurance — Broker/Dealer Change',
-    stages: [ST, BOR, FOP, BDQ, FIN],
-    assignments: [A_STARTED, A_BOR, A_FOP, A_BDQ],
+    stages:      [ST, SIG, SGN, BOR, FOP, BDQ, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_FOP, AA_BDQ],
     note: 'No approval stage required.'
   };
 
   if (p === 'ins-change-naf') return {
     name: 'Insurance — Broker/Dealer Change w/NAF',
-    stages: [ST, BOR, PR1, FOP, BDQ, FIN],
-    assignments: [A_STARTED, A_BOR, A_PR1, A_FOP, A_BDQ],
+    stages:      [ST, SIG, SGN, BOR, PR1, FOP, BDQ, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BDQ],
     note: 'Designated Supervisor approval required.'
   };
 
   return null;
 }
 
-// ─── STEP 1: Relationship ────────────────────────
+// ─── STEP 1: Relationship ─────────────────────────────────────────────────────
 function selectRel(rel) {
   state = { rel, product: null, triggers: {} };
   ['bd','adv','ins'].forEach(r => {
     document.getElementById('btn-'+r).className = 'btn-green' + (r===rel ? ' active' : ' inactive');
   });
   document.getElementById('arrow1').style.opacity = '1';
-
   const container = document.getElementById('product-buttons');
   container.innerHTML = '';
   (products[rel]||[]).forEach(prod => {
@@ -607,28 +556,25 @@ function selectRel(rel) {
     btn.onclick = () => selectProduct(prod.id, prod.label);
     container.appendChild(btn);
   });
-
   document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select transaction type first</span>';
   document.getElementById('trigger-section').classList.add('hidden');
   document.getElementById('result-section').classList.add('hidden');
   document.getElementById('arrow2').style.opacity = '0.25';
 }
 
-// ─── STEP 2: Product ─────────────────────────────
+// ─── STEP 2: Product ──────────────────────────────────────────────────────────
 function selectProduct(prodId, prodLabel) {
   state.product = prodId;
   state.triggers = {};
-
   document.querySelectorAll('.btn-blue').forEach(btn => {
     btn.className = 'btn-blue' + (btn.textContent === prodLabel ? ' active' : ' inactive');
   });
   document.getElementById('arrow2').style.opacity = '1';
   document.getElementById('result-section').classList.add('hidden');
-
   const triggers = triggerDefs[prodId];
   if (triggers && triggers.length > 0) {
     document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#e67e22;font-weight:600;">Answer questions below ↓</span>';
-    renderTriggerQuestions(triggers);
+    renderTriggers(triggers);
   } else {
     document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#27ae60;font-weight:600;">No additional info needed</span>';
     document.getElementById('trigger-section').classList.add('hidden');
@@ -636,27 +582,23 @@ function selectProduct(prodId, prodLabel) {
   }
 }
 
-// ─── TRIGGER QUESTIONS ───────────────────────────
-function renderTriggerQuestions(triggers) {
+// ─── TRIGGER QUESTIONS ────────────────────────────────────────────────────────
+function renderTriggers(triggers) {
   const section = document.getElementById('trigger-section');
   const container = document.getElementById('trigger-questions');
   container.innerHTML = '';
   section.classList.remove('hidden');
-
   triggers.forEach(trig => {
     if (trig.showWhen) {
-      const depKey = Object.keys(trig.showWhen)[0];
-      if (!trig.showWhen[depKey].includes(state.triggers[depKey])) return;
+      const key = Object.keys(trig.showWhen)[0];
+      if (!trig.showWhen[key].includes(state.triggers[key])) return;
     }
-
     const row = document.createElement('div');
     row.className = 'trigger-row';
-
     const q = document.createElement('span');
     q.className = 'trigger-q';
     q.textContent = trig.question;
     row.appendChild(q);
-
     const opts = document.createElement('div');
     opts.className = 'trigger-options';
     trig.options.forEach(opt => {
@@ -673,27 +615,22 @@ function renderTriggerQuestions(triggers) {
 
 function selectTrigger(trigId, value, allTriggers) {
   state.triggers[trigId] = value;
-  // Clear downstream triggers
   allTriggers.forEach(t => {
-    if (t.showWhen && Object.keys(t.showWhen)[0] === trigId) {
-      delete state.triggers[t.id];
-    }
+    if (t.showWhen && Object.keys(t.showWhen)[0] === trigId) delete state.triggers[t.id];
   });
-  renderTriggerQuestions(allTriggers);
+  renderTriggers(allTriggers);
   const wf = resolveWorkflow();
   if (wf) renderResult();
   else document.getElementById('result-section').classList.add('hidden');
 }
 
-// ─── RENDER RESULT ───────────────────────────────
+// ─── RENDER RESULT ────────────────────────────────────────────────────────────
 function renderResult() {
   const wf = resolveWorkflow();
   if (!wf) return;
-
   const section = document.getElementById('result-section');
   section.classList.remove('hidden');
 
-  // Stage row
   let stageHTML = '<div class="stage-row">';
   wf.stages.forEach((s, i) => {
     if (i > 0) stageHTML += '<span class="stage-arrow">→</span>';
@@ -701,22 +638,15 @@ function renderResult() {
   });
   stageHTML += '</div>';
 
-  // Assignment table
-  let assignHTML = `<table class="assign-table">
-    <thead><tr><th>Stage</th><th>Assigned To</th></tr></thead><tbody>`;
+  let assignHTML = '<table class="assign-table"><thead><tr><th>Stage</th><th>Assigned To</th></tr></thead><tbody>';
   wf.assignments.forEach(a => {
     const isTBD = a.assigned === 'TBD';
-    assignHTML += `<tr>
-      <td>${a.stage}</td>
-      <td><span class="tag ${a.tag}">${isTBD ? '<em style="color:#a0aec0">TBD</em>' : a.assigned}</span></td>
-    </tr>`;
+    assignHTML += `<tr><td>${a.stage}</td><td><span class="tag ${a.tag}">${isTBD ? '<em style="color:#a0aec0">TBD</em>' : a.assigned}</span></td></tr>`;
   });
   assignHTML += '</tbody></table>';
 
   section.innerHTML = `
-    <div class="result-header">
-      <div class="result-title">${wf.name}</div>
-    </div>
+    <div class="result-header"><div class="result-title">${wf.name}</div></div>
     ${wf.note ? `<div class="result-note">${wf.note}</div>` : ''}
     <div class="result-section-label">Stage Path</div>
     ${stageHTML}
@@ -725,7 +655,7 @@ function renderResult() {
   `;
 }
 
-// ─── RESET ───────────────────────────────────────
+// ─── RESET ────────────────────────────────────────────────────────────────────
 function resetWizard() {
   state = { rel: null, product: null, triggers: {} };
   ['bd','adv','ins'].forEach(r => document.getElementById('btn-'+r).className = 'btn-green');
