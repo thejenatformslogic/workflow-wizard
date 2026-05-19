@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ausdal Financial Partners — New Account Workflow</title>
+<title>New Account Workflow</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; color: #333; min-height: 100vh; }
@@ -145,18 +145,24 @@
   <div style="display:flex;align-items:center;gap:14px;">
     <span class="hamburger">☰</span>
     <div class="logo-area">
-      <div class="logo-text">
-        <div class="firm-name">AUSDAL</div>
-        <div class="firm-sub">Financial Partners</div>
-      </div>
-      <div class="header-divider"></div>
-      <div class="logo-globe"></div>
+      <svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+        <!-- Generic shield/emblem logo -->
+        <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+        <circle cx="20" cy="20" r="14" fill="rgba(255,255,255,0.12)"/>
+        <!-- Globe lines -->
+        <ellipse cx="20" cy="20" rx="14" ry="8" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="6" y1="20" x2="34" y2="20" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <line x1="20" y1="6" x2="20" y2="34" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <!-- Wordmark placeholder bars -->
+        <rect x="44" y="12" width="50" height="6" rx="2" fill="rgba(255,255,255,0.7)"/>
+        <rect x="44" y="23" width="34" height="4" rx="2" fill="rgba(255,255,255,0.35)"/>
+      </svg>
     </div>
   </div>
   <div class="header-right">
-    <span>Ausdal Financial Partners ▾</span>
+    <span>Client Firm ▾</span>
     <span style="margin:0 4px;opacity:0.4;">|</span>
-    <span>Jennifer Sauter ▾</span>
+    <span>User ▾</span>
   </div>
 </div>
 
@@ -344,8 +350,8 @@ function resolveWorkflow() {
     };
     return {
       name: 'BD — Broker/Dealer Change w/NAF',
-      stages: [ST, BOR, SIG, SGN, PR1, FOP, BDQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_SIG, A_SGN, A_PR1, A_FOP, A_BDQ],
+      stages: [ST, SIG, SGN, BOR, PR1, FOP, BDQ, FIN],
+      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_FOP, A_BDQ],
       note: 'Designated Supervisor approval required.'
     };
   }
@@ -485,8 +491,8 @@ function resolveWorkflow() {
 
     if (t.custodian === 'Schwab') return {
       name: `Advisory — ${prog} Schwab`,
-      stages: [ST, BOR, SIG, SGN, PR1, BIL, SCQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_SIG, A_SGN, A_PR1, A_BIL, A_SCQ],
+      stages: [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
+      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL, A_SCQ],
       note: 'Includes signatures stage. Billing Set Up owner TBD.'
     };
 
@@ -506,15 +512,15 @@ function resolveWorkflow() {
 
     if (t.custodian === 'Fidelity / Pontera / ByAllAccounts') return {
       name: `Advisory — ${prog} Held Away Asset`,
-      stages: [ST, BOR, SIG, SGN, PR1, BIL, FIN],
-      assignments: [A_STARTED, A_BOR, A_SIG, A_SGN, A_PR1, A_BIL],
+      stages: [ST, SIG, SGN, BOR, PR1, BIL, FIN],
+      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL],
       note: 'Includes signatures stage. Billing Set Up owner TBD.'
     };
 
     if (t.custodian === 'Jackson') return {
       name: `Advisory — ${prog} Variable Annuity (Jackson)`,
-      stages: [ST, BOR, SIG, SGN, PR1, BIL, FIN],
-      assignments: [A_STARTED, A_BOR, A_SIG, A_SGN, A_PR1, A_BIL],
+      stages: [ST, SIG, SGN, BOR, PR1, BIL, FIN],
+      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL],
       note: 'Includes signatures stage. Billing Set Up owner TBD.'
     };
 
@@ -532,8 +538,8 @@ function resolveWorkflow() {
     if (!t.custodian) return null;
     if (t.custodian === 'Schwab (Adhesion)') return {
       name: 'Advisory — TAMP Adhesion (Schwab)',
-      stages: [ST, BOR, SIG, SGN, PR1, BIL, SCQ, FIN],
-      assignments: [A_STARTED, A_BOR, A_SIG, A_SGN, A_PR1, A_BIL, A_SCQ],
+      stages: [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
+      assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_BIL, A_SCQ],
       note: 'Includes signatures stage. Billing Set Up owner TBD.'
     };
     return {
@@ -562,8 +568,8 @@ function resolveWorkflow() {
 
   if (p === 'ins-docs') return {
     name: 'Insurance — New Account (Docs Generated)',
-    stages: [ST, BOR, SIG, SGN, PR1, FOP, FIN],
-    assignments: [A_STARTED, A_BOR, A_SIG, A_SGN, A_PR1, A_FOP],
+    stages: [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+    assignments: [A_STARTED, A_SIG, A_SGN, A_BOR, A_PR1, A_FOP],
     note: 'Includes BO Review and signatures stage.'
   };
 
