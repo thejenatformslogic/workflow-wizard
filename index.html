@@ -145,11 +145,10 @@ const products = {
     { id:'bd-other',     label:'Other Business' },
   ],
   adv: [
-    { id:'adv-amp',      label:'AFP Advisor Managed (AMP)' },
-    { id:'adv-tpmm-uma', label:'TPMM / UMA' },
-    { id:'adv-tpmm-sub', label:'TPMM / Sub-Advisory' },
-    { id:'adv-tamp',     label:'TAMP' },
-    { id:'adv-fp',       label:'Financial Planning' },
+    { id:'adv-afp',  label:'AFP Advisor Managed' },
+    { id:'adv-tpmm', label:'Third Party Money Manager (TPMM)' },
+    { id:'adv-tamp', label:'Turnkey Asset Management Platform (TAMP)' },
+    { id:'adv-fp',   label:'Financial Planning' },
   ],
   ins: [
     { id:'ins-imo',        label:'New Account (Through IMO)' },
@@ -179,26 +178,30 @@ const triggerDefs = {
     { id:'options', question:'Is there an options agreement on file?', options:['Yes','No'] },
     { id:'funding',  question:'Funding type?', options:['Transfer','All Others'] },
   ],
-  'adv-amp':      advTriggers(),
-  'adv-tpmm-uma': advTriggers(true),
-  'adv-tpmm-sub': advTriggers(),
-  'adv-tamp': [
-    { id:'custodian', question:'Where is the account custodied?', options:['Schwab (Adhesion)','All Others'] },
-  ],
-};
-
-function advTriggers(includeGoldman) {
-  const custs = ['Pershing','Schwab','Axos'];
-  if (includeGoldman) custs.push('Goldman Sachs');
-  custs.push('Fidelity / Pontera / ByAllAccounts','Jackson','Other');
-  return [
-    { id:'custodian', question:'Where is the account custodied?', options: custs },
+  'adv-afp': [
+    { id:'program',   question:'What is the program?', options:['Advisor Managed Portfolio (AMP)','Held Away Asset','Qualified Plan Management','529 Plan (Direct Business)','Variable Annuity'] },
+    { id:'custodian', question:'Where is the account custodied?', options:['Pershing','Schwab','Axos','Fidelity / Pontera / ByAllAccounts','Jackson','Other'],
+      showWhen:{ program:['Advisor Managed Portfolio (AMP)','Variable Annuity'] } },
     { id:'options',   question:'Is there an options agreement on file?', options:['Yes','No'],
       showWhen:{ custodian:['Pershing'] } },
     { id:'funding',   question:'Funding type?', options:['Transfer','All Others'],
       showWhen:{ custodian:['Pershing'] } },
-  ];
-}
+  ],
+  'adv-tpmm': [
+    { id:'program',   question:'What is the program?', options:['Unified Managed Account (UMA)','Separately Managed Account (Sub-Advisory)','Solicitor'] },
+    { id:'custodian', question:'Where is the account custodied?', options:['Pershing','Schwab','Axos','Goldman Sachs'],
+      showWhen:{ program:['Unified Managed Account (UMA)','Separately Managed Account (Sub-Advisory)'] } },
+    { id:'options',   question:'Is there an options agreement on file?', options:['Yes','No'],
+      showWhen:{ custodian:['Pershing'] } },
+    { id:'funding',   question:'Funding type?', options:['Transfer','All Others'],
+      showWhen:{ custodian:['Pershing'] } },
+  ],
+  'adv-tamp': [
+    { id:'program', question:'What is the program?', options:['Adhesion (Schwab)','All Others (Assetmark / Geowealth / OPS)'] },
+  ],
+};
+
+// advTriggers function removed - program question now inline in triggerDefs
 
 // ─── STAGE & ASSIGNMENT CONSTANTS ────────────────────────────────────────────
 // Stages
@@ -278,15 +281,15 @@ function resolveWorkflow() {
     if (!t.naf) return null;
     if (t.naf === 'No') return {
       name: 'BD — Broker/Dealer Change',
-      stages:      [ST, SIG, SGN, BOR, FOP, BDQ, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_FOP, AA_BDQ],
-      note: 'No approval stage required.'
+      stages:      [ST, SIG, SGN, BOR, BDQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_BDQ],
+      note: 'No approval stage. No processing stage.'
     };
     return {
       name: 'BD — Broker/Dealer Change w/NAF',
-      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BDQ, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BDQ],
-      note: 'Designated Supervisor approval required.'
+      stages:      [ST, SIG, SGN, BOR, PR1, BDQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BDQ],
+      note: 'Designated Supervisor approval required. No processing stage.'
     };
   }
 
@@ -405,9 +408,119 @@ function resolveWorkflow() {
 
   // ══ ADVISORY ═════════════════════════════════════════════════════════════════
 
-  if (['adv-amp','adv-tpmm-uma','adv-tpmm-sub'].includes(p)) {
+  if (p === 'adv-afp') {
+    if (!t.program) return null;
+    const prog = t.program;
+
+    // Held Away Asset — no custodian question
+    if (prog === 'Held Away Asset') return {
+      name: 'Advisory — AFP Held Away Asset',
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL],
+      note: 'Billing Set Up owner TBD.'
+    };
+
+    // Qualified Plan Management — no custodian question
+    if (prog === 'Qualified Plan Management') return {
+      name: 'Advisory — AFP Qualified Plan Management',
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+      note: ''
+    };
+
+    // 529 Plan — no custodian question
+    if (prog === '529 Plan (Direct Business)') return {
+      name: 'Advisory — AFP 529 Plan (my529 / Utah)',
+      stages:      [ST, SIG, SGN, BOR, MPA, FOP, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_MPA, AA_FOP, AA_BIL],
+      note: 'Municipal Principal approval. Mint Hill office only. Billing Set Up owner TBD.'
+    };
+
+    // AMP and Variable Annuity need custodian
     if (!t.custodian) return null;
-    const prog = p === 'adv-amp' ? 'AMP' : p === 'adv-tpmm-uma' ? 'TPMM/UMA' : 'TPMM/Sub-Advisory';
+
+    if (t.custodian === 'Pershing') {
+      if (!t.options || !t.funding) return null;
+      const hasOpts = t.options === 'Yes';
+      const hasXfer = t.funding === 'Transfer';
+      if (hasOpts && hasXfer) return {
+        name: `Advisory — AFP ${prog} Pershing (Options + Transfer)`,
+        stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, BIL, PAQ, TRQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_OPA, AA_OPS, AA_BOP, AA_BIL, AA_PAQ, AA_TRQ],
+        note: 'Options Set Up + Billing Set Up owners TBD. Two follow-up queues.'
+      };
+      if (hasOpts) return {
+        name: `Advisory — AFP ${prog} Pershing (Options, No Transfer)`,
+        stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, BIL, PAQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_OPA, AA_OPS, AA_BOP, AA_BIL, AA_PAQ],
+        note: 'Options Set Up + Billing Set Up owners TBD.'
+      };
+      if (hasXfer) return {
+        name: `Advisory — AFP ${prog} Pershing (No Options, Transfer)`,
+        stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, PAQ, TRQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_PAQ, AA_TRQ],
+        note: 'Billing Set Up owner TBD. Two follow-up queues.'
+      };
+      return {
+        name: `Advisory — AFP ${prog} Pershing (No Options, No Transfer)`,
+        stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, PAQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_PAQ],
+        note: 'Billing Set Up owner TBD.'
+      };
+    }
+
+    if (t.custodian === 'Schwab') return {
+      name: `Advisory — AFP ${prog} Schwab`,
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, SCQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_SCQ],
+      note: 'Billing Set Up owner TBD.'
+    };
+
+    if (t.custodian === 'Axos') return {
+      name: `Advisory — AFP ${prog} Axos`,
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, AXQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_AXQ],
+      note: 'Billing Set Up owner TBD.'
+    };
+
+    if (t.custodian === 'Fidelity / Pontera / ByAllAccounts') return {
+      name: `Advisory — ${prog} Held Away Asset`,
+      stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
+      note: 'Billing Set Up owner TBD.'
+    };
+
+    if (t.custodian === 'Jackson') return {
+      name: `Advisory — AFP ${prog} (Jackson)`,
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL],
+      note: 'Billing Set Up owner TBD.'
+    };
+
+    if (t.custodian === 'Other') return {
+      name: `Advisory — AFP ${prog} (Other)`,
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+      note: 'Nationwide / Prudential / MyRock.'
+    };
+
+    return null;
+  }
+
+  // TPMM resolver
+  if (p === 'adv-tpmm') {
+    if (!t.program) return null;
+    const prog = t.program;
+
+    // Solicitor — no custodian question
+    if (prog === 'Solicitor') return {
+      name: 'Advisory — TPMM Solicitor',
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+      note: ''
+    };
+
+    if (!t.custodian) return null;
 
     if (t.custodian === 'Pershing') {
       if (!t.options || !t.funding) return null;
@@ -427,69 +540,44 @@ function resolveWorkflow() {
       };
       if (hasXfer) return {
         name: `Advisory — ${prog} Pershing (No Options, Transfer)`,
-        stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, PAQ, TRQ, FIN],
-        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_PAQ, AA_TRQ],
+        stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, PAQ, TRQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_PAQ, AA_TRQ],
         note: 'Billing Set Up owner TBD. Two follow-up queues.'
       };
       return {
         name: `Advisory — ${prog} Pershing (No Options, No Transfer)`,
-        stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, PAQ, FIN],
-        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_PAQ],
+        stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, PAQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_PAQ],
         note: 'Billing Set Up owner TBD.'
       };
     }
-
     if (t.custodian === 'Schwab') return {
       name: `Advisory — ${prog} Schwab`,
-      stages:      [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL, AA_SCQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, SCQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_SCQ],
       note: 'Billing Set Up owner TBD.'
     };
-
     if (t.custodian === 'Axos') return {
       name: `Advisory — ${prog} Axos`,
-      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, AXQ, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_AXQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, AXQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_AXQ],
       note: 'Billing Set Up owner TBD.'
     };
-
     if (t.custodian === 'Goldman Sachs') return {
       name: `Advisory — ${prog} Goldman Sachs`,
-      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP],
       note: 'Lapiana office only. No Billing Set Up.'
     };
-
-    if (t.custodian === 'Fidelity / Pontera / ByAllAccounts') return {
-      name: `Advisory — ${prog} Held Away Asset`,
-      stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
-      note: 'Billing Set Up owner TBD.'
-    };
-
-    if (t.custodian === 'Jackson') return {
-      name: `Advisory — ${prog} Variable Annuity (Jackson)`,
-      stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
-      note: 'Billing Set Up owner TBD.'
-    };
-
-    if (t.custodian === 'Other') return {
-      name: `Advisory — ${prog} Variable Annuity (Other)`,
-      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
-      note: 'Nationwide / Prudential / MyRock.'
-    };
-
     return null;
   }
 
   if (p === 'adv-tamp') {
-    if (!t.custodian) return null;
-    if (t.custodian === 'Schwab (Adhesion)') return {
+    if (!t.program) return null;
+    if (t.program === 'Adhesion (Schwab)') return {
       name: 'Advisory — TAMP Adhesion (Schwab)',
-      stages:      [ST, SIG, SGN, BOR, PR1, BIL, SCQ, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL, AA_SCQ],
+      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, SCQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_SCQ],
       note: 'Billing Set Up owner TBD.'
     };
     return {
@@ -511,9 +599,9 @@ function resolveWorkflow() {
 
   if (p === 'ins-imo') return {
     name: 'Insurance — New Account (Through IMO)',
-    stages:      [ST, PR1, FOP, FIN],
-    assignments: [AA_ST, AA_PR1, AA_FOP],
-    note: 'No signatures stage. No BO Review. Documents generated through IMO.'
+    stages:      [ST, BOR, PR1, BOP, FIN],
+    assignments: [AA_ST, AA_BOR, AA_PR1, AA_BOP],
+    note: 'No signatures stage. Documents generated through IMO.'
   };
 
   if (p === 'ins-docs') return {
@@ -525,15 +613,15 @@ function resolveWorkflow() {
 
   if (p === 'ins-change') return {
     name: 'Insurance — Broker/Dealer Change',
-    stages:      [ST, SIG, SGN, BOR, FOP, BDQ, FIN],
-    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_FOP, AA_BDQ],
-    note: 'No approval stage required.'
+    stages:      [ST, SIG, SGN, BOR, BOP, BDQ, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_BOP, AA_BDQ],
+    note: 'No approval stage.'
   };
 
   if (p === 'ins-change-naf') return {
     name: 'Insurance — Broker/Dealer Change w/NAF',
-    stages:      [ST, SIG, SGN, BOR, PR1, FOP, BDQ, FIN],
-    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BDQ],
+    stages:      [ST, SIG, SGN, BOR, PR1, BOP, BDQ, FIN],
+    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BDQ],
     note: 'Designated Supervisor approval required.'
   };
 
