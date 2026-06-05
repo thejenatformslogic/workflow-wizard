@@ -68,6 +68,24 @@
   .reset-link:hover { color: #718096; }
   .hidden { display: none !important; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Workflow type toggle */
+  .wf-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+  .btn-toggle {
+    padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: 2px solid #1a2540; transition: all 0.15s;
+    background: white; color: #1a2540;
+  }
+  .btn-toggle.active { background: #1a2540; color: white; }
+  .btn-toggle:hover:not(.active) { background: #eef2f8; }
+
+  /* Warning note */
+  .warning-note {
+    background: #fff8e1; border: 1px solid #ffc107; border-radius: 6px;
+    padding: 8px 14px; font-size: 12px; color: #856404;
+    margin-top: 16px; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .warning-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 </style>
 </head>
 <body>
@@ -95,13 +113,17 @@
 </div>
 
 <div class="main">
-  <div class="page-title">New Account Workflow</div>
+  <div class="wf-toggle">
+    <button class="btn-toggle active" id="toggle-nao" onclick="switchWorkflowType('nao')">New Account Workflow</button>
+    <button class="btn-toggle" id="toggle-maint" onclick="switchWorkflowType('maint')">Maintenance Workflow</button>
+  </div>
+  <div class="page-title" id="page-title">New Account Workflow</div>
   <div class="page-sub">Select the relationship type and transaction to begin.</div>
   <div class="wizard-card">
     <div class="step-flow">
-      <div class="step-group">
-        <div class="step-label">Relationship Type</div>
-        <div class="step-buttons">
+      <div class="step-group" id="rel-group">
+        <div class="step-label" id="rel-label">Relationship Type</div>
+        <div class="step-buttons" id="rel-buttons">
           <button class="btn-green" id="btn-bd"  onclick="selectRel('bd')">Broker / Dealer</button>
           <button class="btn-green" id="btn-adv" onclick="selectRel('adv')">Advisory</button>
           <button class="btn-green" id="btn-ins" onclick="selectRel('ins')">Insurance</button>
@@ -132,6 +154,151 @@
 <script>
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let state = { rel: null, product: null, triggers: {} };
+let workflowType = 'nao'; // 'nao' or 'maint'
+
+// ─── SWITCH WORKFLOW TYPE ─────────────────────────────────────────────────────
+function switchWorkflowType(type) {
+  workflowType = type;
+  resetWizard();
+
+  document.getElementById('toggle-nao').className   = 'btn-toggle' + (type === 'nao'   ? ' active' : '');
+  document.getElementById('toggle-maint').className = 'btn-toggle' + (type === 'maint' ? ' active' : '');
+  document.getElementById('page-title').textContent = type === 'nao' ? 'New Account Workflow' : 'Maintenance Workflow';
+
+  const relGroup = document.getElementById('rel-group');
+  const relLabel = document.getElementById('rel-label');
+  const relButtons = document.getElementById('rel-buttons');
+  const arrow1 = document.getElementById('arrow1');
+
+  if (type === 'maint') {
+    // Maintenance: hide relationship type, show flat transaction list directly
+    relGroup.style.display = 'none';
+    arrow1.style.display = 'none';
+    document.getElementById('rel-label').textContent = 'Transaction Type';
+    // Populate product dropdown for maintenance
+    const container = document.getElementById('product-buttons');
+    container.innerHTML = '';
+    const sel = document.createElement('select');
+    sel.id = 'maint-dropdown';
+    sel.style.cssText = 'width:100%;max-width:480px;padding:10px 14px;font-size:13px;border:1px solid #cbd5e0;border-radius:6px;background:white;color:#2d3748;cursor:pointer;';
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = '-- Select transaction type --';
+    sel.appendChild(defaultOpt);
+    maintProducts.forEach(prod => {
+      const opt = document.createElement('option');
+      opt.value = prod.id;
+      opt.textContent = prod.label;
+      sel.appendChild(opt);
+    });
+    sel.onchange = () => {
+      if (sel.value) selectMaintProduct(sel.value, maintProducts.find(p => p.id === sel.value)?.label || '');
+      else {
+        state = { rel: null, product: null, triggers: {} };
+        document.getElementById('trigger-section').classList.add('hidden');
+        document.getElementById('result-section').classList.add('hidden');
+        document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select transaction type first</span>';
+      }
+    };
+    container.appendChild(sel);
+    document.getElementById('arrow2').style.opacity = '1';
+    document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select transaction type first</span>';
+  } else {
+    relGroup.style.display = '';
+    arrow1.style.display = '';
+    arrow1.style.opacity = '0.25';
+    document.getElementById('product-buttons').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select relationship type first</span>';
+    document.getElementById('arrow2').style.opacity = '0.25';
+  }
+}
+
+// ─── MAINTENANCE PRODUCT SELECTION ───────────────────────────────────────────
+function selectMaintProduct(prodId, prodLabel) {
+  state.product = prodId;
+  state.triggers = {};
+  document.querySelectorAll('.btn-blue').forEach(btn => {
+    btn.className = 'btn-blue' + (btn.textContent === prodLabel ? ' active' : ' inactive');
+  });
+  document.getElementById('result-section').classList.add('hidden');
+  const triggers = maintTriggerDefs[prodId];
+  if (triggers && triggers.length > 0) {
+    document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#e67e22;font-weight:600;">Answer questions below ↓</span>';
+    renderMaintTriggers(triggers);
+  } else {
+    document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#27ae60;font-weight:600;">No additional info needed</span>';
+    document.getElementById('trigger-section').classList.add('hidden');
+    renderMaintResult();
+  }
+}
+
+function renderMaintTriggers(triggers) {
+  const section = document.getElementById('trigger-section');
+  const container = document.getElementById('trigger-questions');
+  container.innerHTML = '';
+  section.classList.remove('hidden');
+  triggers.forEach(trig => {
+    if (trig.showWhen) {
+      const key = Object.keys(trig.showWhen)[0];
+      if (!trig.showWhen[key].includes(state.triggers[key])) return;
+    }
+    const row = document.createElement('div');
+    row.className = 'trigger-row';
+    const q = document.createElement('span');
+    q.className = 'trigger-q';
+    q.textContent = trig.question;
+    row.appendChild(q);
+    const opts = document.createElement('div');
+    opts.className = 'trigger-options';
+    trig.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-trigger' + (state.triggers[trig.id] === opt ? ' active' : '');
+      btn.textContent = opt;
+      btn.onclick = () => {
+        state.triggers[trig.id] = opt;
+        renderMaintTriggers(triggers);
+        const wf = resolveMaintWorkflow();
+        if (wf) renderMaintResult();
+        else document.getElementById('result-section').classList.add('hidden');
+      };
+      opts.appendChild(btn);
+    });
+    row.appendChild(opts);
+    container.appendChild(row);
+  });
+}
+
+function renderMaintResult() {
+  const wf = resolveMaintWorkflow();
+  if (!wf) return;
+  const section = document.getElementById('result-section');
+  section.classList.remove('hidden');
+
+  let stageHTML = '<div class="stage-row">';
+  wf.stages.forEach((s, i) => {
+    if (i > 0) stageHTML += '<span class="stage-arrow">→</span>';
+    stageHTML += `<button class="stage-btn ${s.cls}">${s.label}</button>`;
+  });
+  stageHTML += '</div>';
+
+  let assignHTML = '<table class="assign-table"><thead><tr><th>Stage</th><th>Assigned To</th></tr></thead><tbody>';
+  wf.assignments.forEach(a => {
+    const isTBD = a.assigned === 'TBD';
+    assignHTML += `<tr><td>${a.stage}</td><td><span class="tag ${a.tag}">${isTBD ? '<em style="color:#a0aec0">TBD</em>' : a.assigned}</span></td></tr>`;
+  });
+  assignHTML += '</tbody></table>';
+
+  const warningHTML = wf.warning ? `<div class="warning-note"><span class="warning-icon">⚠️</span><span>${wf.warning}</span></div>` : '';
+
+  section.innerHTML = `
+    <div class="result-header"><div class="result-title">${wf.name}</div></div>
+    ${wf.note ? `<div class="result-note">${wf.note}</div>` : ''}
+    <div class="result-section-label">Stage Path</div>
+    ${stageHTML}
+    <div class="result-section-label">Stage Assignments</div>
+    ${assignHTML}
+    ${warningHTML}
+  `;
+}
 
 // ─── PRODUCTS ────────────────────────────────────────────────────────────────
 const products = {
@@ -157,6 +324,434 @@ const products = {
     { id:'ins-change-naf', label:'Broker/Dealer Change w/NAF' },
   ]
 };
+
+// ─── MAINTENANCE PRODUCTS (flat list, category + item) ────────────────────────
+const maintProducts = [
+  // Account Maintenance
+  { id:'maint-addr-change',       label:'Account Maintenance — Address Change' },
+  { id:'maint-acct-termination',  label:'Account Maintenance — Account Termination / Closure' },
+  { id:'maint-beneficiary',       label:'Account Maintenance — Beneficiary Change' },
+  { id:'maint-reg-change',        label:'Account Maintenance — Account Update: Change of Registration' },
+  { id:'maint-trustee-change',    label:'Account Maintenance — Account Update: Change of Trustee' },
+  { id:'maint-death-update',      label:'Account Maintenance — Account Update: Due to Death' },
+  { id:'maint-w9',                label:'Account Maintenance — IRS Form W9' },
+  { id:'maint-trusted-contact',   label:'Account Maintenance — Trusted Contact Person' },
+  { id:'maint-options-agmt',      label:'Account Maintenance — Options Agreement' },
+  { id:'maint-408b2',             label:'Account Maintenance — 408b2 Disclosure Document' },
+  { id:'maint-suitability',       label:'Account Maintenance — Client Suitability Profile Update' },
+  { id:'maint-online-access',     label:'Account Maintenance — Online Access Add / Change / Delete' },
+  { id:'maint-sweep',             label:'Account Maintenance — Sweep Instruction Updates' },
+  { id:'maint-checkwriting',      label:'Account Maintenance — Check-Writing' },
+  // Advisory
+  { id:'maint-share-class',       label:'Advisory — Share Class Conversion Requests' },
+  { id:'maint-billing-freq',      label:'Advisory — Advisory Billing Update: Frequency / Method' },
+  { id:'maint-billing-excl',      label:'Advisory — Advisory Billing Update: Exclusions' },
+  { id:'maint-billing-decrease',  label:'Advisory — Advisory Billing Update: Fee Decrease' },
+  { id:'maint-billing-increase',  label:'Advisory — Advisory Billing Update: Fee Increase' },
+  { id:'maint-adv-termination',   label:'Advisory — Advisory Agreement Termination' },
+  { id:'maint-annual-review',     label:'Advisory — Advisory Annual Review' },
+  { id:'maint-fin-plan-doc',      label:'Advisory — Financial Plan Documentation' },
+  { id:'maint-risk-tolerance',    label:'Advisory — Risk Tolerance Questionnaire' },
+  // Money Movement
+  { id:'maint-acct-transfer',     label:'Money Movement — Account Transfer' },
+  { id:'maint-ach',               label:'Money Movement — ACH New / Update' },
+  { id:'maint-journal',           label:'Money Movement — Journal' },
+  { id:'maint-wire',              label:'Money Movement — Wire Request' },
+  { id:'maint-deposit',           label:'Money Movement — Deposit / Contribution' },
+  { id:'maint-withdrawal-nosig',  label:'Money Movement — Withdrawal / Distribution (No Signature Required)' },
+  { id:'maint-withdrawal-sig',    label:'Money Movement — Withdrawal / Distribution (Signature Required)' },
+  // Other
+  { id:'maint-other-nosig',       label:'Other — Other: No Signature Required' },
+  { id:'maint-other-sig',         label:'Other — Other: Signed Documents' },
+  // Record-Keeping
+  { id:'maint-annuity-receipt',   label:'Record-Keeping — Annuity Delivery Receipt' },
+  { id:'maint-meeting-notes',     label:'Record-Keeping — Meeting Notes' },
+  { id:'maint-file-doc',          label:'Record-Keeping — File Document' },
+  // Service Request
+  { id:'maint-sig-guarantee',     label:'Service Request — Signature Guarantee' },
+  { id:'maint-trade-correction',  label:'Service Request — Trade Correction Request' },
+  { id:'maint-alt-inv',           label:'Service Request — Alternative Investment Redemption / Reregistration' },
+];
+
+// Custodian trigger (reused across many maintenance workflows)
+const custodianTrigger = [
+  { id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab','All Other Custodian / Sponsor / Vendor'] },
+];
+
+// ─── MAINTENANCE TRIGGER DEFINITIONS ─────────────────────────────────────────
+const maintTriggerDefs = {
+  'maint-addr-change':      custodianTrigger,
+  'maint-acct-termination': custodianTrigger,
+  'maint-beneficiary':      custodianTrigger,
+  'maint-reg-change':       custodianTrigger,
+  'maint-trustee-change':   custodianTrigger,
+  'maint-death-update':     custodianTrigger,
+  'maint-w9':               custodianTrigger,
+  'maint-options-agmt':     [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+  'maint-checkwriting':     [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Schwab','All Others'] }],
+  'maint-share-class':      [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+  'maint-acct-transfer':    custodianTrigger,
+  'maint-alt-inv':          [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab','All Others'] }],
+  'maint-ach':              custodianTrigger,
+  'maint-journal':          [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+  'maint-wire':             [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+  'maint-deposit':          [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+  'maint-withdrawal-nosig': [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+  'maint-withdrawal-sig':   [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
+};
+
+// ─── STAGE CONSTANT SHORTCUTS ─────────────────────────────────────────────────
+// Follow-up queue stages for maintenance
+const PMQ = { label:'Cash Management Follow-up', cls:'stage-followup' };
+const AA_PMQ = { stage:'Cash Management Follow-up', assigned:'Cash Management Queue', tag:'tag-bo' };
+const TFQ = { label:'Transfer Follow-up', cls:'stage-followup' };
+const AA_TFQ = { stage:'Transfer Follow-up', assigned:'Transfer Queue', tag:'tag-bo' };
+const PAT = { label:'Pershing Alt Follow-up', cls:'stage-followup' };
+const AA_PAT = { stage:'Pershing Alt Follow-up', assigned:'Pershing Alt Queue', tag:'tag-bo' };
+
+// ─── MAINTENANCE WORKFLOW RESOLVER ───────────────────────────────────────────
+function resolveMaintWorkflow() {
+  const p = state.product;
+  const t = state.triggers;
+
+  // Helper: custodian-branching workflow builder
+  function custodianWF(baseName, paths) {
+    const c = t.custodian;
+    if (!c) return null;
+    const path = paths[c] || paths['All Other Custodian / Sponsor / Vendor'] || paths['All Others'];
+    if (!path) return null;
+    return { name: `${baseName} (${c})`, note: '', warning: '', ...path };
+  }
+
+  // ── ACCOUNT MAINTENANCE ───────────────────────────────────────────────────
+
+  // Address Change
+  if (p === 'maint-addr-change') return custodianWF('Account Maintenance — Address Change', {
+    'Pershing':   { stages:[ST,BOR,PAQ,FIN],           assignments:[AA_ST,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,BOR,FOP,FIN], assignments:[AA_ST,AA_BOR,AA_FOP] },
+  });
+
+  // Account Termination/Closure
+  if (p === 'maint-acct-termination') return custodianWF('Account Maintenance — Account Termination / Closure', {
+    'Pershing':   { stages:[ST,BOR,PAQ,FIN],           assignments:[AA_ST,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,BOR,FOP,SCQ,FIN],       assignments:[AA_ST,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,BOR,FOP,FIN], assignments:[AA_ST,AA_BOR,AA_FOP] },
+  });
+
+  // Beneficiary Change
+  if (p === 'maint-beneficiary') return custodianWF('Account Maintenance — Beneficiary Change', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ],
+      warning:'Open item: IRA and/or TOD? Pershing only? Emily says Schwab too — confirm scope before configuring.' },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ],
+      warning:'Open item: IRA and/or TOD? Confirm scope before configuring.' },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ],
+      warning:'Open item: IRA and/or TOD? Confirm scope before configuring.' },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP],
+      warning:'Open item: IRA and/or TOD? Confirm scope before configuring.' },
+  });
+
+  // Change of Registration
+  if (p === 'maint-reg-change') return custodianWF('Account Maintenance — Account Update: Change of Registration', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
+  });
+
+  // Change of Trustee
+  if (p === 'maint-trustee-change') return custodianWF('Account Maintenance — Account Update: Change of Trustee', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
+  });
+
+  // Due to Death
+  if (p === 'maint-death-update') return custodianWF('Account Maintenance — Account Update: Due to Death', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
+  });
+
+  // IRS Form W9
+  if (p === 'maint-w9') return custodianWF('Account Maintenance — IRS Form W9', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
+  });
+
+  // Trusted Contact Person — no custodian question
+  if (p === 'maint-trusted-contact') return {
+    name: 'Account Maintenance — Trusted Contact Person',
+    stages:      [ST,SIG,SGN,BOR,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR],
+    note: ''
+  };
+
+  // Options Agreement
+  if (p === 'maint-options-agmt') return custodianWF('Account Maintenance — Options Agreement', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PR1,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_SCQ] },
+  });
+
+  // 408b2 — no custodian, no signature, no approval
+  if (p === 'maint-408b2') return {
+    name: 'Account Maintenance — 408b2 Disclosure Document',
+    stages:      [ST,BOR,FIN],
+    assignments: [AA_ST,AA_BOR],
+    note: '408b2 update does not require supervisor approval.',
+    warning: 'Open item: Pershing only — confirm scope before configuring.'
+  };
+
+  // Client Suitability Profile Update
+  if (p === 'maint-suitability') return {
+    name: 'Account Maintenance — Client Suitability Profile Update',
+    stages:      [ST,SIG,SGN,BOR,PR1,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1],
+    note: '',
+    warning: 'Open item: NAF Update or Client Update — needs to trigger update to Maestro data file. Confirm workflow steps needed.'
+  };
+
+  // Online Access — no custodian, signature + BO Review only
+  if (p === 'maint-online-access') return {
+    name: 'Account Maintenance — Online Access Add / Change / Delete',
+    stages:      [ST,SIG,SGN,BOR,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR],
+    note: '',
+    warning: 'Open item: Everything but Pershing — confirm custodian scope.'
+  };
+
+  // Sweep Instructions — Pershing only, no signature
+  if (p === 'maint-sweep') return {
+    name: 'Account Maintenance — Sweep Instruction Updates',
+    stages:      [ST,BOR,FIN],
+    assignments: [AA_ST,AA_BOR],
+    note: 'Pershing only.',
+    warning: 'Open item: Confirm Pershing-only scope before configuring.'
+  };
+
+  // Check-Writing
+  if (p === 'maint-checkwriting') return custodianWF('Account Maintenance — Check-Writing', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ],
+      note:'Pershing only.' },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+    'All Others': { stages:[ST,SIG,SGN,BOR,FOP,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
+  });
+
+  // ── ADVISORY ─────────────────────────────────────────────────────────────
+
+  // Share Class Conversion — no signature, just BO Review + follow-up
+  if (p === 'maint-share-class') return custodianWF('Advisory — Share Class Conversion Requests', {
+    'Pershing':   { stages:[ST,BOR,PAQ,FIN], assignments:[AA_ST,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,BOR,AXQ,FIN], assignments:[AA_ST,AA_BOR,AA_AXQ] },
+    'Schwab':     { stages:[ST,BOR,SCQ,FIN], assignments:[AA_ST,AA_BOR,AA_SCQ] },
+  });
+
+  // Advisory Billing Update — Frequency/Method
+  if (p === 'maint-billing-freq') return {
+    name: 'Advisory — Advisory Billing Update: Frequency / Method',
+    stages:      [ST,SIG,SGN,BIL,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BIL],
+    note: ''
+  };
+
+  // Advisory Billing Update — Exclusions (no signature)
+  if (p === 'maint-billing-excl') return {
+    name: 'Advisory — Advisory Billing Update: Exclusions',
+    stages:      [ST,BIL,FIN],
+    assignments: [AA_ST,AA_BIL],
+    note: ''
+  };
+
+  // Advisory Billing Update — Fee Decrease (no signature)
+  if (p === 'maint-billing-decrease') return {
+    name: 'Advisory — Advisory Billing Update: Fee Decrease',
+    stages:      [ST,BIL,FIN],
+    assignments: [AA_ST,AA_BIL],
+    note: ''
+  };
+
+  // Advisory Billing Update — Fee Increase
+  if (p === 'maint-billing-increase') return {
+    name: 'Advisory — Advisory Billing Update: Fee Increase',
+    stages:      [ST,SIG,SGN,BIL,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BIL],
+    note: ''
+  };
+
+  // Advisory Agreement Termination (no signature)
+  if (p === 'maint-adv-termination') return {
+    name: 'Advisory — Advisory Agreement Termination',
+    stages:      [ST,BIL,FIN],
+    assignments: [AA_ST,AA_BIL],
+    note: ''
+  };
+
+  // Advisory Annual Review
+  if (p === 'maint-annual-review') return {
+    name: 'Advisory — Advisory Annual Review',
+    stages:      [ST,BOR,PR1,FIN],
+    assignments: [AA_ST,AA_BOR,AA_PR1],
+    note: ''
+  };
+
+  // Financial Plan Documentation
+  if (p === 'maint-fin-plan-doc') return {
+    name: 'Advisory — Financial Plan Documentation',
+    stages:      [ST,BOR,PR1,FIN],
+    assignments: [AA_ST,AA_BOR,AA_PR1],
+    note: ''
+  };
+
+  // Risk Tolerance Questionnaire
+  if (p === 'maint-risk-tolerance') return {
+    name: 'Advisory — Risk Tolerance Questionnaire',
+    stages:      [ST,SIG,SGN,BOR,PR1,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1],
+    note: ''
+  };
+
+  // ── MONEY MOVEMENT ────────────────────────────────────────────────────────
+
+  // Account Transfer
+  if (p === 'maint-acct-transfer') return custodianWF('Money Movement — Account Transfer', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PR1,FOP,TFQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_TFQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,BOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,BOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,BOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP] },
+  });
+
+  // ACH New/Update
+  if (p === 'maint-ach') return custodianWF('Money Movement — ACH New / Update', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],           assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,BOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,BOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP] },
+  });
+
+  // Journal
+  if (p === 'maint-journal') return custodianWF('Money Movement — Journal', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ],
+      warning:'Open item: Account for internal journals — confirm workflow steps.' },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
+  });
+
+  // Wire Request
+  if (p === 'maint-wire') return custodianWF('Money Movement — Wire Request', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,BOW,FOP,PMQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_FOP,AA_PMQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,BOW,BOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_BOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,BOW,BOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_BOP,AA_SCQ] },
+  });
+
+  // Deposit/Contribution — no signature
+  if (p === 'maint-deposit') return custodianWF('Money Movement — Deposit / Contribution', {
+    'Pershing':   { stages:[ST,BOR,PMQ,FIN], assignments:[AA_ST,AA_BOR,AA_PMQ],
+      warning:'Open item: No client signatures required — confirm wording. Eventually replace the log in MCO (GOALS).' },
+    'Axos':       { stages:[ST,BOR,AXQ,FIN], assignments:[AA_ST,AA_BOR,AA_AXQ],
+      warning:'Open item: No client signatures required — confirm wording. Eventually replace the log in MCO (GOALS).' },
+    'Schwab':     { stages:[ST,BOR,SCQ,FIN], assignments:[AA_ST,AA_BOR,AA_SCQ],
+      warning:'Open item: No client signatures required — confirm wording. Eventually replace the log in MCO (GOALS).' },
+  });
+
+  // Withdrawal/Distribution — no signature required
+  if (p === 'maint-withdrawal-nosig') return custodianWF('Money Movement — Withdrawal / Distribution (No Signature Required)', {
+    'Pershing':   { stages:[ST,BOR,PMQ,FIN], assignments:[AA_ST,AA_BOR,AA_PMQ],
+      warning:'Open item: Next dropdown — check to address of record, ACH to account on file. Confirm options.' },
+    'Axos':       { stages:[ST,BOR,AXQ,FIN], assignments:[AA_ST,AA_BOR,AA_AXQ],
+      warning:'Open item: Next dropdown — check to address of record, ACH to account on file. Confirm options.' },
+    'Schwab':     { stages:[ST,BOR,SCQ,FIN], assignments:[AA_ST,AA_BOR,AA_SCQ],
+      warning:'Open item: Next dropdown — check to address of record, ACH to account on file. Confirm options.' },
+  });
+
+  // Withdrawal/Distribution — signature required
+  if (p === 'maint-withdrawal-sig') return custodianWF('Money Movement — Withdrawal / Distribution (Signature Required)', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PMQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PMQ],
+      warning:'Open item: IRA distribution — can we point to NetX for check request? Could include LOI for 3rd party check. Confirm wording.' },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,AXQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_AXQ],
+      warning:'Open item: Confirm wording — IRA distribution, LOI for 3rd party check.' },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,SCQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_SCQ],
+      warning:'Open item: Confirm wording — IRA distribution, LOI for 3rd party check.' },
+  });
+
+  // ── OTHER ─────────────────────────────────────────────────────────────────
+
+  if (p === 'maint-other-nosig') return {
+    name: 'Other — Other: No Signature Required',
+    stages:      [ST,FIN],
+    assignments: [AA_ST],
+    note: '',
+    warning: 'Open item: Confirm whether this includes a workflow or is documentation only.'
+  };
+
+  if (p === 'maint-other-sig') return {
+    name: 'Other — Other: Signed Documents',
+    stages:      [ST,SIG,SGN,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN],
+    note: '',
+    warning: 'Open item: Confirm whether this includes a workflow or is documentation only.'
+  };
+
+  // ── RECORD-KEEPING ────────────────────────────────────────────────────────
+
+  if (p === 'maint-annuity-receipt') return {
+    name: 'Record-Keeping — Annuity Delivery Receipt',
+    stages:      [ST,SIG,SGN,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN],
+    note: ''
+  };
+
+  if (p === 'maint-meeting-notes') return {
+    name: 'Record-Keeping — Meeting Notes',
+    stages:      [ST,FIN],
+    assignments: [AA_ST],
+    note: ''
+  };
+
+  if (p === 'maint-file-doc') return {
+    name: 'Record-Keeping — File Document',
+    stages:      [ST,FIN],
+    assignments: [AA_ST],
+    note: '',
+    warning: 'Open item: Make clear there is no workflow — this is documentation only.'
+  };
+
+  // ── SERVICE REQUESTS ──────────────────────────────────────────────────────
+
+  if (p === 'maint-sig-guarantee') return {
+    name: 'Service Request — Signature Guarantee',
+    stages:      [ST,SIG,SGN,BOR,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR],
+    note: ''
+  };
+
+  if (p === 'maint-trade-correction') return {
+    name: 'Service Request — Trade Correction Request',
+    stages:      [ST,BOR,FIN],
+    assignments: [AA_ST,AA_BOR],
+    note: '',
+    warning: 'Open item: Modify form to say A/B — confirm wording.'
+  };
+
+  if (p === 'maint-alt-inv') return custodianWF('Service Request — Alternative Investment Redemption / Reregistration', {
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAT,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAT],
+      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ],
+      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ],
+      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
+    'All Others': { stages:[ST,SIG,SGN,BOR,FOP,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP],
+      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
+  });
+
+  return null;
+}
 
 // ─── TRIGGER DEFINITIONS ─────────────────────────────────────────────────────
 const triggerDefs = {
@@ -430,10 +1025,10 @@ function resolveWorkflow() {
 
     // 529 Plan — no custodian question
     if (prog === '529 Plan (Direct Business)') return {
-      name: 'Advisory — AFP 529 Plan (my529 / Utah)',
+      name: 'Advisory — AFP 529 Plan',
       stages:      [ST, SIG, SGN, BOR, MPA, FOP, BIL, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_MPA, AA_FOP, AA_BIL],
-      note: 'Municipal Principal approval. Mint Hill office only. Billing Set Up owner TBD.'
+      note: 'Municipal Principal approval. Billing Set Up owner TBD.'
     };
 
     // AMP and Variable Annuity need custodian
@@ -746,10 +1341,15 @@ function renderResult() {
 // ─── RESET ────────────────────────────────────────────────────────────────────
 function resetWizard() {
   state = { rel: null, product: null, triggers: {} };
-  ['bd','adv','ins'].forEach(r => document.getElementById('btn-'+r).className = 'btn-green');
-  document.getElementById('arrow1').style.opacity = '0.25';
+  ['bd','adv','ins'].forEach(r => {
+    const btn = document.getElementById('btn-'+r);
+    if (btn) btn.className = 'btn-green';
+  });
+  if (workflowType === 'nao') {
+    document.getElementById('arrow1').style.opacity = '0.25';
+    document.getElementById('product-buttons').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select relationship type first</span>';
+  }
   document.getElementById('arrow2').style.opacity = '0.25';
-  document.getElementById('product-buttons').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select relationship type first</span>';
   document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select transaction type first</span>';
   document.getElementById('trigger-section').classList.add('hidden');
   document.getElementById('result-section').classList.add('hidden');
