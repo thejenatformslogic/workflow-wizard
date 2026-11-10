@@ -30,6 +30,10 @@
   .btn-blue:hover { background: #357abd; }
   .btn-blue.active { background: #2568a8; box-shadow: 0 0 0 3px rgba(74,144,217,0.35); }
   .btn-blue.inactive { opacity: 0.45; cursor: default; }
+  .btn-nav { background: #4a90d9; color: white; border: none; border-radius: 4px; padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer; min-width: 200px; text-align: center; transition: background 0.15s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .btn-nav:hover { background: #357abd; }
+  .btn-nav.active { background: #2568a8; box-shadow: 0 0 0 3px rgba(74,144,217,0.35); }
+  .btn-nav.inactive { opacity: 0.45; }
   .trigger-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e2e8f0; animation: fadeIn 0.25s ease; }
   .trigger-title { font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 14px; }
   .trigger-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -135,6 +139,16 @@
         <div class="step-buttons" id="product-buttons">
           <span style="font-size:12px;color:#a0aec0;padding-top:8px;">Select relationship type first</span>
         </div>
+      </div>
+      <div class="arrow-col hidden" id="arrow-prog"><div class="arrow-btn">›</div></div>
+      <div class="step-group hidden" id="prog-group">
+        <div class="step-label">Second-Level Transaction Type</div>
+        <div class="step-buttons" id="prog-buttons"></div>
+      </div>
+      <div class="arrow-col hidden" id="arrow-co"><div class="arrow-btn">›</div></div>
+      <div class="step-group hidden" id="co-group">
+        <div class="step-label">Company</div>
+        <div class="step-buttons" id="co-buttons"></div>
       </div>
       <div class="arrow-col" id="arrow2" style="opacity:0.25"><div class="arrow-btn">›</div></div>
       <div class="step-group">
@@ -313,13 +327,13 @@ const products = {
   ],
   adv: [
     { id:'adv-afp',  label:'AFP Advisor Managed' },
-    { id:'adv-tpmm', label:'Third Party Money Manager (TPMM)' },
+    { id:'adv-tpmm', label:'AFP Third Party Managed' },
     { id:'adv-tamp', label:'Turnkey Asset Management Platform (TAMP)' },
     { id:'adv-fp',   label:'Financial Planning' },
   ],
   ins: [
-    { id:'ins-imo',        label:'New Account (Through IMO)' },
-    { id:'ins-docs',       label:'New Account (Docs Generated)' },
+    { id:'ins-imo',        label:'FIA (Through IMO)' },
+    { id:'ins-docs',       label:'FIA Direct' },
     { id:'ins-change',     label:'Broker/Dealer Change' },
     { id:'ins-change-naf', label:'Broker/Dealer Change w/NAF' },
   ]
@@ -371,6 +385,11 @@ const maintProducts = [
   { id:'maint-sig-guarantee',     label:'Service Request — Signature Guarantee' },
   { id:'maint-trade-correction',  label:'Service Request — Trade Correction Request' },
   { id:'maint-alt-inv',           label:'Service Request — Alternative Investment Redemption / Reregistration' },
+  // Money Movement — Roth Conversion
+  { id:'maint-roth-pershing',     label:'Money Movement — Roth Conversion (Pershing)' },
+  { id:'maint-roth-axos',         label:'Money Movement — Roth Conversion (Axos)' },
+  { id:'maint-roth-schwab',       label:'Money Movement — Roth Conversion (Schwab)' },
+  { id:'maint-roth-others',       label:'Money Movement — Roth Conversion (All Other Custodian / Sponsor / Vendor)' },
 ];
 
 // Custodian trigger (reused across many maintenance workflows)
@@ -403,11 +422,11 @@ const maintTriggerDefs = {
 // ─── STAGE CONSTANT SHORTCUTS ─────────────────────────────────────────────────
 // Follow-up queue stages for maintenance
 const PMQ = { label:'Cash Management Follow-up', cls:'stage-followup' };
-const AA_PMQ = { stage:'Cash Management Follow-up', assigned:'Cash Management Queue', tag:'tag-bo' };
+const AA_PMQ = { stage:'Cash Management Follow-up', assigned:'cash_management@ausdal.com', tag:'tag-bo' };
 const TFQ = { label:'Transfer Follow-up', cls:'stage-followup' };
-const AA_TFQ = { stage:'Transfer Follow-up', assigned:'Transfer Queue', tag:'tag-bo' };
+const AA_TFQ = { stage:'Transfer Follow-up', assigned:'transfer_followup@ausdal.com', tag:'tag-bo' };
 const PAT = { label:'Pershing Alt Follow-up', cls:'stage-followup' };
-const AA_PAT = { stage:'Pershing Alt Follow-up', assigned:'Pershing Alt Queue', tag:'tag-bo' };
+const AA_PAT = { stage:'Pershing Alt Follow-up', assigned:'pershing_followup@ausdal.com', tag:'tag-bo' };
 
 // ─── MAINTENANCE WORKFLOW RESOLVER ───────────────────────────────────────────
 function resolveMaintWorkflow() {
@@ -495,9 +514,9 @@ function resolveMaintWorkflow() {
 
   // Options Agreement
   if (p === 'maint-options-agmt') return custodianWF('Account Maintenance — Options Agreement', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PR1,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_SCQ] },
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,OPA,OPS,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_OPA,AA_OPS,AA_PAQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,FOP,AXQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,FOP,SCQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_SCQ] },
   });
 
   // 408b2 — no custodian, no signature, no approval
@@ -622,16 +641,16 @@ function resolveMaintWorkflow() {
   // Account Transfer
   if (p === 'maint-acct-transfer') return custodianWF('Money Movement — Account Transfer', {
     'Pershing':   { stages:[ST,SIG,SGN,BOR,PR1,FOP,TFQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_TFQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,BOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,BOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,BOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_SCQ] },
+    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP] },
   });
 
   // ACH New/Update
   if (p === 'maint-ach') return custodianWF('Money Movement — ACH New / Update', {
     'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],           assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
     'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,BOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_SCQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,BOP,SCQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_SCQ] },
     'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,BOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP] },
   });
 
@@ -645,9 +664,9 @@ function resolveMaintWorkflow() {
 
   // Wire Request
   if (p === 'maint-wire') return custodianWF('Money Movement — Wire Request', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,BOW,FOP,PMQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_FOP,AA_PMQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,BOW,BOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_BOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,BOW,BOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_BOP,AA_SCQ] },
+    'Pershing':   { stages:[ST,SIG,SGN,BOR,BOW,BOP,CMQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_BOP,AA_CMQ] },
+    'Axos':       { stages:[ST,SIG,SGN,BOR,BOW,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_FOP,AA_AXQ] },
+    'Schwab':     { stages:[ST,SIG,SGN,BOR,BOW,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_FOP,AA_SCQ] },
   });
 
   // Deposit/Contribution — no signature
@@ -739,6 +758,32 @@ function resolveMaintWorkflow() {
     warning: 'Open item: Modify form to say A/B — confirm wording.'
   };
 
+  // Roth Conversion
+  if (p === 'maint-roth-pershing') return {
+    name: 'Money Movement — Roth Conversion (Pershing)',
+    stages:      [ST,SIG,SGN,BOR,CMQ,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_CMQ],
+    note: ''
+  };
+  if (p === 'maint-roth-axos') return {
+    name: 'Money Movement — Roth Conversion (Axos)',
+    stages:      [ST,SIG,SGN,BOR,FOP,AXQ,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ],
+    note: ''
+  };
+  if (p === 'maint-roth-schwab') return {
+    name: 'Money Movement — Roth Conversion (Schwab)',
+    stages:      [ST,SIG,SGN,BOR,FOP,SCQ,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ],
+    note: ''
+  };
+  if (p === 'maint-roth-others') return {
+    name: 'Money Movement — Roth Conversion (All Other Custodian / Sponsor / Vendor)',
+    stages:      [ST,SIG,SGN,BOR,FOP,FIN],
+    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP],
+    note: ''
+  };
+
   if (p === 'maint-alt-inv') return custodianWF('Service Request — Alternative Investment Redemption / Reregistration', {
     'Pershing':   { stages:[ST,SIG,SGN,BOR,PAT,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAT],
       warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
@@ -754,45 +799,90 @@ function resolveMaintWorkflow() {
 }
 
 // ─── TRIGGER DEFINITIONS ─────────────────────────────────────────────────────
+const FUND_STD  = ['Wire from Pershing','Wire Non-Pershing','Check','Transfer','Certificate','Other'];
+const FUND_PERS = ['Wire','Check','Transfer','Certificate','Other'];
+const FUND_BRKG = ['Wire Non-Pershing','Check','Transfer','Certificate','Other'];
+// locked:true       = defaulted value; displayed but cannot be changed.
+// accountField:true = value read from the account (platform default field), NOT an index question.
+// noRouting:true    = index question that does not change the stage path (required forms pending).
 const triggerDefs = {
   'bd-change': [
     { id:'naf', question:'Does this include a New Account Form (NAF)?', options:['Yes','No'] },
+    { id:'accttype', question:'Account type', accountField:true, options:['529 Plan','All Others'],
+      showWhen:{ naf:['Yes'] } },
   ],
   'bd-altinv': [
-    { id:'custodian', question:'Where is the account custodied?', options:['Pershing','Axos','All Others'] },
-    { id:'funding',   question:'Funding type?', options:['Wire from Pershing Account','All Others'],
-      showWhen:{ custodian:['Pershing','All Others'] } },
+    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Axos','Any other custodian (e.g., CNB)'] },
+    { id:'funding',   question:'Funding Type', options:FUND_PERS,
+      showWhen:{ custodian:['Pershing'] } },
+    { id:'funding',   question:'Funding Type', options:FUND_STD,
+      showWhen:{ custodian:['Any other custodian (e.g., CNB)'] } },
+    { id:'ex1031',    question:'Is this a 1031 Exchange?', options:['Yes','No'], noRouting:true },
   ],
   'bd-mutfund': [
-    { id:'funding', question:'Funding type?', options:['Wire from Pershing Account','All Others'] },
+    { id:'funding', question:'Funding Type', options:FUND_STD },
   ],
   'bd-va': [
-    { id:'funding', question:'Funding type?', options:['Wire from Pershing Account','All Others'] },
+    { id:'funding', question:'Funding Type', options:FUND_STD },
+    { id:'ex1035',  question:'Is this a 1035 Exchange?', options:['Yes','No'], noRouting:true },
   ],
   'bd-brokerage': [
-    { id:'options', question:'Is there an options agreement on file?', options:['Yes','No'] },
-    { id:'funding',  question:'Funding type?', options:['Transfer','All Others'] },
+    { id:'processas', question:'Process As', accountField:true, locked:true, options:['Custodian'] },
+    { id:'custodian', question:'Custodian',  accountField:true, locked:true, options:['Pershing'] },
+    { id:'options', question:'Do you want options on this account?', options:['Yes','No'] },
+    { id:'funding', question:'Funding Type', options:FUND_BRKG },
   ],
   'adv-afp': [
-    { id:'program',   question:'What is the program?', options:['Advisor Managed Portfolio (AMP)','Held Away Asset','Qualified Plan Management','529 Plan (Direct Business)','Variable Annuity'] },
-    { id:'custodian', question:'Where is the account custodied?', options:['Pershing','Schwab','Axos','Fidelity / Pontera / ByAllAccounts','Jackson','Other'],
-      showWhen:{ program:['Advisor Managed Portfolio (AMP)','Variable Annuity'] } },
-    { id:'options',   question:'Is there an options agreement on file?', options:['Yes','No'],
+    { id:'program', question:'Second-Level Transaction Type', navButton:true, options:['Advisor Managed Portfolio (AMP)','Held Away Assets','Qualified Plan Management','529 Plan','Variable Annuity'] },
+    { id:'vendor', question:'Vendor/Product (filtered list)', accountField:true, options:['Jackson National','Nationwide','Prudential','Lincoln'],
+      showWhen:{ program:['Variable Annuity'] } },
+    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Schwab','Axos'],
+      showWhen:{ program:['Advisor Managed Portfolio (AMP)'] } },
+    { id:'custodian', question:'Custodian', accountField:true, noRouting:true, defaultValue:'Other (Pontera / ByAllAccounts)',
+      options:['Fidelity','Other (Pontera / ByAllAccounts)'],
+      showWhen:{ program:['Held Away Assets'] } },
+    { id:'acctcat', question:'Account Category', accountField:true, locked:true, options:['Retirement Plans'],
+      showWhen:{ program:['Held Away Assets','Qualified Plan Management'] } },
+    { id:'acctcat', question:'Account Category', accountField:true, locked:true, options:['Education Savings'],
+      showWhen:{ program:['529 Plan'] } },
+    { id:'options',   question:'Do you want options on this account?', options:['Yes','No'],
       showWhen:{ custodian:['Pershing'] } },
-    { id:'funding',   question:'Funding type?', options:['Transfer','All Others'],
+    { id:'funding',   question:'Funding Type', options:FUND_BRKG,
       showWhen:{ custodian:['Pershing'] } },
+    { id:'feetype', question:'Account Fee Type', noRouting:true, options:['Wrap (Transaction Fees Included)','Non Wrap (Transaction Fees Additional)'],
+      showWhen:{ custodian:['Pershing'] } },
+    { id:'feetype', question:'Account Fee Type', locked:true, options:['Non Wrap (Transaction Fees Additional)'],
+      showWhen:{ custodian:['Schwab','Axos'] } },
+    { id:'discretion', question:'Discretion', noRouting:true, options:['Yes','No'],
+      showWhen:{ program:['Advisor Managed Portfolio (AMP)','Held Away Assets','529 Plan','Variable Annuity'] } },
+    { id:'discretion', question:'Discretion', locked:true, options:['No'],
+      showWhen:{ program:['Qualified Plan Management'] } },
   ],
   'adv-tpmm': [
-    { id:'program',   question:'What is the program?', options:['Unified Managed Account (UMA)','Separately Managed Account (Sub-Advisory)','Solicitor'] },
-    { id:'custodian', question:'Where is the account custodied?', options:['Pershing','Schwab','Axos','Goldman Sachs'],
-      showWhen:{ program:['Unified Managed Account (UMA)','Separately Managed Account (Sub-Advisory)'] } },
-    { id:'options',   question:'Is there an options agreement on file?', options:['Yes','No'],
+    { id:'program',   question:'Second-Level Transaction Type', navButton:true, options:['Unified Managed Account (UMA)','Separately Managed Account (SMA)','Third Party / Solicitor'] },
+    { id:'processas', question:'Process As', accountField:true, locked:true, options:['Custodian'],
+      showWhen:{ program:['Unified Managed Account (UMA)','Separately Managed Account (SMA)','Third Party / Solicitor'] } },
+    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Schwab','Axos','Any other custodian (e.g., CNB)'],
+      showWhen:{ program:['Unified Managed Account (UMA)','Separately Managed Account (SMA)'] } },
+    { id:'custodian', question:'Custodian', accountField:true, locked:true, options:['Schwab'],
+      showWhen:{ program:['Third Party / Solicitor'] } },
+    { id:'manager', question:'Select Manager', locked:true, options:['Churchill Management Group'],
+      showWhen:{ program:['Third Party / Solicitor'] } },
+    { id:'options',   question:'Do you want options on this account?', options:['Yes','No'],
       showWhen:{ custodian:['Pershing'] } },
-    { id:'funding',   question:'Funding type?', options:['Transfer','All Others'],
+    { id:'funding',   question:'Funding Type', options:FUND_BRKG,
       showWhen:{ custodian:['Pershing'] } },
   ],
   'adv-tamp': [
-    { id:'program', question:'What is the program?', options:['Adhesion (Schwab)','All Others (Assetmark / Geowealth / OPS)'] },
+    { id:'program', question:'Second-Level Transaction Type', navButton:true, options:['Adhesion','Orion Portfolio Solutions','AssetMark','GeoWealth'] },
+    { id:'processas', question:'Process As', accountField:true, locked:true, options:['Custodian'],
+      showWhen:{ program:['Adhesion','Orion Portfolio Solutions','AssetMark','GeoWealth'] } },
+    { id:'custodian', question:'Custodian', accountField:true, locked:true, options:['Schwab'],
+      showWhen:{ program:['Adhesion','Orion Portfolio Solutions'] } },
+    { id:'custodian', question:'Custodian', accountField:true, noRouting:true, options:['AssetMark','Pershing','Schwab'],
+      showWhen:{ program:['AssetMark'] } },
+    { id:'custodian', question:'Custodian', accountField:true, noRouting:true, options:['Schwab','Goldman'],
+      showWhen:{ program:['GeoWealth'] } },
   ],
 };
 
@@ -814,8 +904,8 @@ const OPS = { label:'Options Set Up',         cls:'stage-processing' };
 const BIL = { label:'Billing Set Up',         cls:'stage-billing'    };
 const FIN = { label:'Finalized',              cls:'stage-final'      };
 const BDQ = { label:'BD Change Follow-up',    cls:'stage-followup'   };
-const CMQ = { label:'Cash Mgmt Follow-up',    cls:'stage-followup'   };
-const PAQ = { label:'Pershing Acct Follow-up',cls:'stage-followup'   };
+const CMQ = { label:'Cash Management Follow-up',    cls:'stage-followup'   };
+const PAQ = { label:'Pershing Account Follow-up',cls:'stage-followup'   };
 const PAL = { label:'Pershing Alt Follow-up', cls:'stage-followup'   };
 const AXQ = { label:'Axos Follow-up',         cls:'stage-followup'   };
 const SCQ = { label:'Schwab Follow-up',       cls:'stage-followup'   };
@@ -825,22 +915,23 @@ const TRQ = { label:'Transfer Follow-up',     cls:'stage-followup'   };
 const AA_ST   = { stage:'Started',                   assigned:'WF Creator (Rep)',        tag:'tag-owner' };
 const AA_SIG  = { stage:'For-Signature',              assigned:'WF Creator',              tag:'tag-owner' };
 const AA_SGN  = { stage:'Signed',                     assigned:'WF Creator',              tag:'tag-owner' };
-const AA_BOR  = { stage:'Back Office Review',         assigned:'Back Office',             tag:'tag-bo'    };
+const AA_BOR  = { stage:'Back Office Review',         assigned:'BackOffice_Review@ausdal.com',             tag:'tag-bo'    };
 const AA_PR1  = { stage:'Principal Review 1',         assigned:'Designated Supervisor',   tag:'tag-tbd'   };
-const AA_OPA  = { stage:'Options Principal Review',   assigned:'Options Principal',       tag:'tag-tbd'   };
-const AA_MPA  = { stage:'Municipal Principal Review', assigned:'Municipal Principal',     tag:'tag-tbd'   };
-const AA_BOW  = { stage:'BO Wire Approval',           assigned:'Back Office',             tag:'tag-bo'    };
-const AA_FOP  = { stage:'FO Processing',              assigned:'Front Office',            tag:'tag-fo'    };
-const AA_BOP  = { stage:'BO Processing',              assigned:'Back Office',             tag:'tag-bo'    };
-const AA_OPS  = { stage:'Options Set Up',             assigned:'TBD',                     tag:'tag-tbd'   };
-const AA_BIL  = { stage:'Billing Set Up',             assigned:'TBD',                     tag:'tag-tbd'   };
-const AA_BDQ  = { stage:'BD Change Follow-up',        assigned:'BD Change Queue',         tag:'tag-bo'    };
-const AA_CMQ  = { stage:'Cash Mgmt Follow-up',        assigned:'Cash Management Queue',   tag:'tag-bo'    };
-const AA_PAQ  = { stage:'Pershing Acct Follow-up',    assigned:'Pershing Account Queue',  tag:'tag-bo'    };
-const AA_PAL  = { stage:'Pershing Alt Follow-up',     assigned:'Pershing Alt Queue',      tag:'tag-bo'    };
-const AA_AXQ  = { stage:'Axos Follow-up',             assigned:'Axos Queue',              tag:'tag-bo'    };
-const AA_SCQ  = { stage:'Schwab Follow-up',           assigned:'Schwab Queue',            tag:'tag-bo'    };
-const AA_TRQ  = { stage:'Transfer Follow-up',         assigned:'Transfer Queue',          tag:'tag-bo'    };
+const AA_OPA  = { stage:'Options Principal Review',   assigned:'Timobrien@ausdal.com',       tag:'tag-bo'   };
+const AA_MPA  = { stage:'Municipal Principal Review', assigned:'Municipalprincipal@ausdal.com',     tag:'tag-bo'   };
+const AA_PR1M = { stage:'Principal Review 1',         assigned:'Municipalprincipal@ausdal.com', tag:'tag-bo' };
+const AA_BOW  = { stage:'BO Wire Approval',           assigned:'principal@ausdal.com', tag:'tag-bo' };
+const AA_FOP  = { stage:'FO Processing',              assigned:'WF Creator',            tag:'tag-fo'    };
+const AA_BOP  = { stage:'BO Processing',              assigned:'BackOffice_Processing@ausdal.com',             tag:'tag-bo'    };
+const AA_OPS  = { stage:'Options Set Up',             assigned:'kimcutkomp@ausdal.com',       tag:'tag-bo'    };
+const AA_BIL  = { stage:'Billing Set Up',             assigned:'theclaepie@ausdal.com', tag:'tag-bo'    };
+const AA_BDQ  = { stage:'BD Change Follow-up',        assigned:'BD_change@ausdal.com',         tag:'tag-bo'    };
+const AA_CMQ  = { stage:'Cash Management Follow-up',        assigned:'cash_management@ausdal.com',   tag:'tag-bo'    };
+const AA_PAQ  = { stage:'Pershing Account Follow-up',    assigned:'pershing_followup@ausdal.com',  tag:'tag-bo'    };
+const AA_PAL  = { stage:'Pershing Alt Follow-up',     assigned:'pershing_followup@ausdal.com',      tag:'tag-bo'    };
+const AA_AXQ  = { stage:'Axos Follow-up',             assigned:'axos_followup@ausdal.com',              tag:'tag-bo'    };
+const AA_SCQ  = { stage:'Schwab Follow-up',           assigned:'schwab_followup@ausdal.com',            tag:'tag-bo'    };
+const AA_TRQ  = { stage:'Transfer Follow-up',         assigned:'transfer_followup@ausdal.com',          tag:'tag-bo'    };
 
 // ─── WORKFLOW BUILDER HELPERS ─────────────────────────────────────────────────
 // Standard path WITH signatures (most workflows):
@@ -874,6 +965,15 @@ function resolveWorkflow() {
 
   if (p === 'bd-change') {
     if (!t.naf) return null;
+    if (t.naf === 'Yes') {
+      if (!t.accttype) return null;
+      if (t.accttype === '529 Plan') return {
+        name: 'BD — Broker/Dealer Change w/NAF (529 Plan)',
+        stages:      [ST, SIG, SGN, BOR, PR1, BDQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1M, AA_BDQ],
+        note: 'Account type = 529 Plan (account field). Principal Review 1 assigned to the Municipal Principal, who stamps the New Account Form. No processing stage.'
+      };
+    }
     if (t.naf === 'No') return {
       name: 'BD — Broker/Dealer Change',
       stages:      [ST, SIG, SGN, BOR, BDQ, FIN],
@@ -890,7 +990,7 @@ function resolveWorkflow() {
 
   if (p === 'bd-altinv') {
     if (!t.custodian) return null;
-    const wire = t.funding === 'Wire from Pershing Account';
+    const wire = t.funding === 'Wire from Pershing' || (t.custodian === 'Pershing' && t.funding === 'Wire');
     // Axos — no funding question, resolves immediately
     if (t.custodian === 'Axos') return {
       name: 'BD — Alternative Investment (Axos)',
@@ -912,22 +1012,22 @@ function resolveWorkflow() {
       note: 'BO Processing before FO Processing.'
     };
     if (wire) return {
-      name: 'BD — Alternative Investment (All Others · Wire from Pershing)',
+      name: 'BD — Alternative Investment (Any Other Custodian · Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
       note: 'BO Wire Approval added. BO Processing before FO Processing.'
     };
     return {
-      name: 'BD — Alternative Investment (All Others)',
+      name: 'BD — Alternative Investment (Any Other Custodian)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP],
-      note: 'BO Processing before FO Processing. No custodian-specific follow-up queue.'
+      note: 'Catch-all: any custodian other than Pershing or Axos. BO Processing before FO Processing. No custodian-specific follow-up queue.'
     };
   }
 
   if (p === 'bd-mutfund') {
     if (!t.funding) return null;
-    if (t.funding === 'Wire from Pershing Account') return {
+    if (t.funding === 'Wire from Pershing') return {
       name: 'BD — Mutual Fund (Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
@@ -943,7 +1043,7 @@ function resolveWorkflow() {
 
   if (p === 'bd-va') {
     if (!t.funding) return null;
-    if (t.funding === 'Wire from Pershing Account') return {
+    if (t.funding === 'Wire from Pershing') return {
       name: 'BD — Variable Annuity / RILA / VUL (Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
@@ -1007,9 +1107,9 @@ function resolveWorkflow() {
     if (!t.program) return null;
     const prog = t.program;
 
-    // Held Away Asset — no custodian question
-    if (prog === 'Held Away Asset') return {
-      name: 'Advisory — AFP Held Away Asset',
+    // Held Away Assets — custodian field does not drive routing
+    if (prog === 'Held Away Assets') return {
+      name: 'Advisory — AFP Held Away Assets',
       stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL],
       note: 'Billing Set Up owner TBD.'
@@ -1024,14 +1124,31 @@ function resolveWorkflow() {
     };
 
     // 529 Plan — no custodian question
-    if (prog === '529 Plan (Direct Business)') return {
+    if (prog === '529 Plan') return {
       name: 'Advisory — AFP 529 Plan',
       stages:      [ST, SIG, SGN, BOR, MPA, FOP, BIL, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_MPA, AA_FOP, AA_BIL],
       note: 'Municipal Principal approval. Billing Set Up owner TBD.'
     };
 
-    // AMP and Variable Annuity need custodian
+    // Variable Annuity — filtered Vendor/Product field (replaces custodian Jackson / Other)
+    if (prog === 'Variable Annuity') {
+      if (!t.vendor) return null;
+      if (t.vendor === 'Jackson National') return {
+        name: 'Advisory — AFP Variable Annuity (Jackson National)',
+        stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL],
+        note: 'Process As = Direct; Vendor/Product = Jackson National.'
+      };
+      return {
+        name: `Advisory — AFP Variable Annuity (${t.vendor})`,
+        stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
+        note: `Process As = Direct; Vendor/Product = ${t.vendor}.`
+      };
+    }
+
+    // AMP — custodian (account field)
     if (!t.custodian) return null;
 
     if (t.custodian === 'Pershing') {
@@ -1078,27 +1195,6 @@ function resolveWorkflow() {
       note: 'Billing Set Up owner TBD.'
     };
 
-    if (t.custodian === 'Fidelity / Pontera / ByAllAccounts') return {
-      name: `Advisory — ${prog} Held Away Asset`,
-      stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
-      note: 'Billing Set Up owner TBD.'
-    };
-
-    if (t.custodian === 'Jackson') return {
-      name: `Advisory — AFP ${prog} (Jackson)`,
-      stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL],
-      note: 'Billing Set Up owner TBD.'
-    };
-
-    if (t.custodian === 'Other') return {
-      name: `Advisory — AFP ${prog} (Other)`,
-      stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
-      note: 'Nationwide / Prudential / MyRock.'
-    };
-
     return null;
   }
 
@@ -1107,9 +1203,9 @@ function resolveWorkflow() {
     if (!t.program) return null;
     const prog = t.program;
 
-    // Solicitor — no custodian question
-    if (prog === 'Solicitor') return {
-      name: 'Advisory — TPMM Solicitor',
+    // Third Party / Solicitor — Custodian = Schwab and Manager = Churchill defaulted; routing unchanged
+    if (prog === 'Third Party / Solicitor') return {
+      name: 'Advisory — AFP Third Party Managed: Third Party / Solicitor',
       stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
       note: ''
@@ -1158,28 +1254,28 @@ function resolveWorkflow() {
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_AXQ],
       note: 'Billing Set Up owner TBD.'
     };
-    if (t.custodian === 'Goldman Sachs') return {
-      name: `Advisory — ${prog} Goldman Sachs`,
-      stages:      [ST, SIG, SGN, BOR, PR1, BOP, FIN],
-      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP],
-      note: 'Lapiana office only. No Billing Set Up.'
+    // Catch-all: any custodian other than Pershing, Schwab or Axos (includes Goldman Sachs)
+    return {
+      name: `Advisory — ${prog} (Any Other Custodian)`,
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL],
+      note: 'Catch-all: any custodian other than Pershing, Schwab or Axos (includes Goldman Sachs). Billing Set Up confirmed required.'
     };
-    return null;
   }
 
   if (p === 'adv-tamp') {
     if (!t.program) return null;
-    if (t.program === 'Adhesion (Schwab)') return {
+    if (t.program === 'Adhesion') return {
       name: 'Advisory — TAMP Adhesion (Schwab)',
       stages:      [ST, SIG, SGN, BOR, PR1, FOP, BIL, SCQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP, AA_BIL, AA_SCQ],
       note: 'Billing Set Up owner TBD.'
     };
     return {
-      name: 'Advisory — TAMP (All Others)',
+      name: `Advisory — TAMP ${t.program}`,
       stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
-      note: 'Assetmark / Geowealth / OPS.'
+      note: ''
     };
   }
 
@@ -1187,20 +1283,20 @@ function resolveWorkflow() {
     name: 'Advisory — Financial Planning',
     stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
     assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
-    note: 'No FO or BO Processing stage. Billing Set Up owner TBD.'
+    note: 'No FO or BO Processing stage. Process As, Custodian, Vendor and Account Category are not displayed.'
   };
 
   // ══ INSURANCE ════════════════════════════════════════════════════════════════
 
   if (p === 'ins-imo') return {
-    name: 'Insurance — New Account (Through IMO)',
+    name: 'Insurance — FIA (Through IMO)',
     stages:      [ST, BOR, PR1, BOP, FIN],
     assignments: [AA_ST, AA_BOR, AA_PR1, AA_BOP],
     note: 'No signatures stage. Documents generated through IMO.'
   };
 
   if (p === 'ins-docs') return {
-    name: 'Insurance — New Account (Docs Generated)',
+    name: 'Insurance — FIA Direct',
     stages:      [ST, SIG, SGN, BOR, PR1, FOP, FIN],
     assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_FOP],
     note: ''
@@ -1226,6 +1322,7 @@ function resolveWorkflow() {
 // ─── STEP 1: Relationship ─────────────────────────────────────────────────────
 function selectRel(rel) {
   state = { rel, product: null, triggers: {} };
+  hideNav();
   ['bd','adv','ins'].forEach(r => {
     document.getElementById('btn-'+r).className = 'btn-green' + (r===rel ? ' active' : ' inactive');
   });
@@ -1249,6 +1346,7 @@ function selectRel(rel) {
 function selectProduct(prodId, prodLabel) {
   state.product = prodId;
   state.triggers = {};
+  hideNav();
   document.querySelectorAll('.btn-blue').forEach(btn => {
     btn.className = 'btn-blue' + (btn.textContent === prodLabel ? ' active' : ' inactive');
   });
@@ -1258,6 +1356,7 @@ function selectProduct(prodId, prodLabel) {
   if (triggers && triggers.length > 0) {
     document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#e67e22;font-weight:600;">Answer questions below ↓</span>';
     renderTriggers(triggers);
+    if (resolveWorkflow()) renderResult();
   } else {
     document.getElementById('step3-content').innerHTML = '<span style="font-size:12px;color:#27ae60;font-weight:600;">No additional info needed</span>';
     document.getElementById('trigger-section').classList.add('hidden');
@@ -1265,35 +1364,81 @@ function selectProduct(prodId, prodLabel) {
   }
 }
 
+// Retirement rollover/transfer question — asked for every New Account relationship and transaction type (drives forms only)
+const ROLLOVER_Q = { id:'rollover', question:'Is this a retirement to retirement rollover or transfer?', options:['Yes','No'], noRouting:true };
+Object.values(products).flat().forEach(p => { (triggerDefs[p.id] = triggerDefs[p.id] || []).push(ROLLOVER_Q); });
+
+// ─── NAVIGATION BUTTONS (Program / Company) ──────────────────────────────────
+function hideNav() {
+  ['arrow-prog','prog-group','arrow-co','co-group'].forEach(id => document.getElementById(id).classList.add('hidden'));
+}
+function isVisible(trig) {
+  if (!trig.showWhen) return true;
+  const key = Object.keys(trig.showWhen)[0];
+  return trig.showWhen[key].includes(state.triggers[key]);
+}
+function renderNav(triggers) {
+  hideNav();
+  const navs = (triggers || []).filter(t => t.navButton && isVisible(t));
+  navs.forEach(trig => {
+    const pre = trig.id === 'program' ? 'prog' : 'co';
+    document.getElementById('arrow-' + pre).classList.remove('hidden');
+    document.getElementById(pre + '-group').classList.remove('hidden');
+    const box = document.getElementById(pre + '-buttons');
+    box.innerHTML = '';
+    const chosen = state.triggers[trig.id];
+    trig.options.forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'btn-nav' + (chosen === undefined ? '' : (chosen === opt ? ' active' : ' inactive'));
+      b.textContent = opt;
+      b.onclick = () => selectTrigger(trig.id, opt, triggers);
+      box.appendChild(b);
+    });
+  });
+}
+
 // ─── TRIGGER QUESTIONS ────────────────────────────────────────────────────────
 function renderTriggers(triggers) {
+  renderNav(triggers);
   const section = document.getElementById('trigger-section');
   const container = document.getElementById('trigger-questions');
   container.innerHTML = '';
   section.classList.remove('hidden');
+  let shown = 0;
   triggers.forEach(trig => {
+    if (trig.navButton) return;
     if (trig.showWhen) {
       const key = Object.keys(trig.showWhen)[0];
       if (!trig.showWhen[key].includes(state.triggers[key])) return;
     }
+    shown++;
+    if (trig.defaultValue && state.triggers[trig.id] === undefined) state.triggers[trig.id] = trig.defaultValue;
     const row = document.createElement('div');
     row.className = 'trigger-row';
     const q = document.createElement('span');
     q.className = 'trigger-q';
     q.textContent = trig.question;
+    if (trig.defaultValue) q.innerHTML += ' <span class="tag tag-tbd">Account field — defaults to ' + trig.defaultValue + '</span>';
+    if (trig.navButton)         q.innerHTML += ' <span class="tag tag-tbd">Navigation button — not an index question</span>';
+    if (trig.locked)            q.innerHTML += ' <span class="tag tag-tbd">' + (trig.accountField ? 'Account field — ' : '') + 'defaulted, cannot be changed</span>';
+    else if (trig.accountField && !trig.defaultValue) q.innerHTML += ' <span class="tag tag-tbd">Account field — not an index question</span>';
+    if (trig.noRouting && !trig.accountField) q.innerHTML += ' <span class="tag tag-tbd">Drives forms only — no routing impact</span>';
+    if (trig.openItem)     q.innerHTML += ' <span class="tag tag-tbd">OPEN: ' + trig.openItem + '</span>';
     row.appendChild(q);
     const opts = document.createElement('div');
     opts.className = 'trigger-options';
     trig.options.forEach(opt => {
       const btn = document.createElement('button');
-      btn.className = 'btn-trigger' + (state.triggers[trig.id] === opt ? ' active' : '');
+      btn.className = 'btn-trigger' + ((trig.locked || state.triggers[trig.id] === opt) ? ' active' : '');
       btn.textContent = opt;
-      btn.onclick = () => selectTrigger(trig.id, opt, triggers);
+      if (trig.locked) { btn.disabled = true; btn.style.cursor = 'default'; }
+      else btn.onclick = () => selectTrigger(trig.id, opt, triggers);
       opts.appendChild(btn);
     });
     row.appendChild(opts);
     container.appendChild(row);
   });
+  section.classList.toggle('hidden', shown === 0);
 }
 
 function selectTrigger(trigId, value, allTriggers) {
@@ -1341,6 +1486,7 @@ function renderResult() {
 // ─── RESET ────────────────────────────────────────────────────────────────────
 function resetWizard() {
   state = { rel: null, product: null, triggers: {} };
+  hideNav();
   ['bd','adv','ins'].forEach(r => {
     const btn = document.getElementById('btn-'+r);
     if (btn) btn.className = 'btn-green';
