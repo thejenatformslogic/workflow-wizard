@@ -324,6 +324,7 @@ const products = {
     { id:'bd-brokerage', label:'Pershing Brokerage' },
     { id:'bd-529',       label:'529 Plan' },
     { id:'bd-other',     label:'Other Business' },
+    { id:'bd-plansponsor', label:'Plan Sponsor' },
   ],
   adv: [
     { id:'adv-afp',  label:'AFP Advisor Managed' },
@@ -335,89 +336,18 @@ const products = {
     { id:'ins-imo',        label:'FIA (Through IMO)' },
     { id:'ins-docs',       label:'FIA Direct' },
     { id:'ins-change',     label:'Broker/Dealer Change' },
-    { id:'ins-change-naf', label:'Broker/Dealer Change w/NAF' },
   ]
 };
 
 // ─── MAINTENANCE PRODUCTS (flat list, category + item) ────────────────────────
-const maintProducts = [
-  // Account Maintenance
-  { id:'maint-addr-change',       label:'Account Maintenance — Address Change' },
-  { id:'maint-acct-termination',  label:'Account Maintenance — Account Termination / Closure' },
-  { id:'maint-beneficiary',       label:'Account Maintenance — Beneficiary Change' },
-  { id:'maint-reg-change',        label:'Account Maintenance — Account Update: Change of Registration' },
-  { id:'maint-trustee-change',    label:'Account Maintenance — Account Update: Change of Trustee' },
-  { id:'maint-death-update',      label:'Account Maintenance — Account Update: Due to Death' },
-  { id:'maint-w9',                label:'Account Maintenance — IRS Form W9' },
-  { id:'maint-trusted-contact',   label:'Account Maintenance — Trusted Contact Person' },
-  { id:'maint-options-agmt',      label:'Account Maintenance — Options Agreement' },
-  { id:'maint-408b2',             label:'Account Maintenance — 408b2 Disclosure Document' },
-  { id:'maint-suitability',       label:'Account Maintenance — Client Suitability Profile Update' },
-  { id:'maint-online-access',     label:'Account Maintenance — Online Access Add / Change / Delete' },
-  { id:'maint-sweep',             label:'Account Maintenance — Sweep Instruction Updates' },
-  { id:'maint-checkwriting',      label:'Account Maintenance — Check-Writing' },
-  // Advisory
-  { id:'maint-share-class',       label:'Advisory — Share Class Conversion Requests' },
-  { id:'maint-billing-freq',      label:'Advisory — Advisory Billing Update: Frequency / Method' },
-  { id:'maint-billing-excl',      label:'Advisory — Advisory Billing Update: Exclusions' },
-  { id:'maint-billing-decrease',  label:'Advisory — Advisory Billing Update: Fee Decrease' },
-  { id:'maint-billing-increase',  label:'Advisory — Advisory Billing Update: Fee Increase' },
-  { id:'maint-adv-termination',   label:'Advisory — Advisory Agreement Termination' },
-  { id:'maint-annual-review',     label:'Advisory — Advisory Annual Review' },
-  { id:'maint-fin-plan-doc',      label:'Advisory — Financial Plan Documentation' },
-  { id:'maint-risk-tolerance',    label:'Advisory — Risk Tolerance Questionnaire' },
-  // Money Movement
-  { id:'maint-acct-transfer',     label:'Money Movement — Account Transfer' },
-  { id:'maint-ach',               label:'Money Movement — ACH New / Update' },
-  { id:'maint-journal',           label:'Money Movement — Journal' },
-  { id:'maint-wire',              label:'Money Movement — Wire Request' },
-  { id:'maint-deposit',           label:'Money Movement — Deposit / Contribution' },
-  { id:'maint-withdrawal-nosig',  label:'Money Movement — Withdrawal / Distribution (No Signature Required)' },
-  { id:'maint-withdrawal-sig',    label:'Money Movement — Withdrawal / Distribution (Signature Required)' },
-  // Other
-  { id:'maint-other-nosig',       label:'Other — Other: No Signature Required' },
-  { id:'maint-other-sig',         label:'Other — Other: Signed Documents' },
-  // Record-Keeping
-  { id:'maint-annuity-receipt',   label:'Record-Keeping — Annuity Delivery Receipt' },
-  { id:'maint-meeting-notes',     label:'Record-Keeping — Meeting Notes' },
-  { id:'maint-file-doc',          label:'Record-Keeping — File Document' },
-  // Service Request
-  { id:'maint-sig-guarantee',     label:'Service Request — Signature Guarantee' },
-  { id:'maint-trade-correction',  label:'Service Request — Trade Correction Request' },
-  { id:'maint-alt-inv',           label:'Service Request — Alternative Investment Redemption / Reregistration' },
-  // Money Movement — Roth Conversion
-  { id:'maint-roth-pershing',     label:'Money Movement — Roth Conversion (Pershing)' },
-  { id:'maint-roth-axos',         label:'Money Movement — Roth Conversion (Axos)' },
-  { id:'maint-roth-schwab',       label:'Money Movement — Roth Conversion (Schwab)' },
-  { id:'maint-roth-others',       label:'Money Movement — Roth Conversion (All Other Custodian / Sponsor / Vendor)' },
-];
-
-// Custodian trigger (reused across many maintenance workflows)
-const custodianTrigger = [
-  { id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab','All Other Custodian / Sponsor / Vendor'] },
-];
-
-// ─── MAINTENANCE TRIGGER DEFINITIONS ─────────────────────────────────────────
-const maintTriggerDefs = {
-  'maint-addr-change':      custodianTrigger,
-  'maint-acct-termination': custodianTrigger,
-  'maint-beneficiary':      custodianTrigger,
-  'maint-reg-change':       custodianTrigger,
-  'maint-trustee-change':   custodianTrigger,
-  'maint-death-update':     custodianTrigger,
-  'maint-w9':               custodianTrigger,
-  'maint-options-agmt':     [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-  'maint-checkwriting':     [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Schwab','All Others'] }],
-  'maint-share-class':      [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-  'maint-acct-transfer':    custodianTrigger,
-  'maint-alt-inv':          [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab','All Others'] }],
-  'maint-ach':              custodianTrigger,
-  'maint-journal':          [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-  'maint-wire':             [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-  'maint-deposit':          [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-  'maint-withdrawal-nosig': [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-  'maint-withdrawal-sig':   [{ id:'custodian', question:'When the custodian is:', options:['Pershing','Axos','Schwab'] }],
-};
+// ─── MAINTENANCE (as built: Ausdal_Financial_Partners_Maintenance_Testing_Spreadsheet / dev QA matrix; 39 types, 95 combinations, WF1–WF34) ───
+const MAINT_DATA = [{"id": "m00", "cat": "Account Maintenance", "tt": "Account Update: Change of Registration", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m01", "cat": "Account Maintenance", "tt": "Account Update: Change of Trustee", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m02", "cat": "Account Maintenance", "tt": "Account Update: Due to Death", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m03", "cat": "Account Maintenance", "tt": "Address Change", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": "Schwab is the only Address Change branch that collects a signature."}, "Pershing": {"wf": "WF5", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF12", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF13", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m04", "cat": "Account Maintenance", "tt": "Beneficiary Change", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m05", "cat": "Account Maintenance", "tt": "Check-Writing", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m06", "cat": "Account Maintenance", "tt": "IRS Form W9", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m07", "cat": "Money Movement", "tt": "Journal", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m08", "cat": "Money Movement", "tt": "Roth Conversion", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF20", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Cash Management Follow-up", "cash_management@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m09", "cat": "Other / Record-Keeping / Service Request", "tt": "Alternative Investment Redemption / Reregistration", "branches": {"Schwab": {"wf": "WF1", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF33", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Alt Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": "Pershing uses the Pershing Alt Follow-up queue, not the Pershing Account Follow-up queue."}}}, {"id": "m10", "cat": "Money Movement", "tt": "ACH New / Update", "branches": {"Axos": {"wf": "WF2", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF3", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF26", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": "Schwab and All Others route to Principal Review 1 followed by Back Office Processing. Updated per Maintenance_WFs_-_Changes.xlsx: Principal Review 1 removed; Back Office Processing \u2192 Front Office Processing. Pending Michelle confirmation (conflicts with Ausdal testing comment)."}, "All Others": {"wf": "WF27", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": "Updated per Maintenance_WFs_-_Changes.xlsx: Principal Review 1 removed; Back Office Processing \u2192 Front Office Processing. Pending Michelle confirmation (conflicts with Ausdal testing comment)."}}}, {"id": "m11", "cat": "Money Movement", "tt": "Withdrawal / Distribution (Signature Required)", "branches": {"All Others": {"wf": "WF4", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF20", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Cash Management Follow-up", "cash_management@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF31", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF32", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m12", "cat": "Account Maintenance", "tt": "Account Termination / Closure", "branches": {"Pershing": {"wf": "WF5", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF12", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF13", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF22", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m13", "cat": "Advisory", "tt": "Share Class Conversion Requests", "branches": {"Pershing": {"wf": "WF5", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF8", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": "The named-custodian branches of this transaction type have no Front Office Processing stage."}, "Schwab": {"wf": "WF9", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF13", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m14", "cat": "Account Maintenance", "tt": "Online Access Add / Change / Delete", "branches": {"": {"wf": "WF6", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m15", "cat": "Account Maintenance", "tt": "Trusted Contact Person", "branches": {"": {"wf": "WF6", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Finalized", "System"]], "note": "No custodian branch."}}}, {"id": "m16", "cat": "Other / Record-Keeping / Service Request", "tt": "Signature Guarantee", "branches": {"": {"wf": "WF6", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m17", "cat": "Account Maintenance", "tt": "408b2 Disclosure Document", "branches": {"": {"wf": "WF7", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Finalized", "System"]], "note": "No custodian branch."}}}, {"id": "m18", "cat": "Account Maintenance", "tt": "Sweep Instruction Updates", "branches": {"": {"wf": "WF7", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m19", "cat": "Other / Record-Keeping / Service Request", "tt": "Trade Correction Request", "branches": {"": {"wf": "WF7", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m20", "cat": "Money Movement", "tt": "Deposit / Contribution", "branches": {"Axos": {"wf": "WF8", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF9", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF13", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF19", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Cash Management Follow-up", "cash_management@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m21", "cat": "Money Movement", "tt": "Withdrawal / Distribution (No Signature Required)", "branches": {"Axos": {"wf": "WF8", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF9", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF13", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF19", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Cash Management Follow-up", "cash_management@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m22", "cat": "Advisory", "tt": "Advisory Agreement Termination", "branches": {"": {"wf": "WF10", "stages": [["Started", "WF Creator (Rep)"], ["Billing Set Up", "theclaepie@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m23", "cat": "Advisory", "tt": "Advisory Billing Update: Exclusions", "branches": {"": {"wf": "WF10", "stages": [["Started", "WF Creator (Rep)"], ["Billing Set Up", "theclaepie@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m24", "cat": "Advisory", "tt": "Advisory Billing Update: Fee Decrease", "branches": {"": {"wf": "WF10", "stages": [["Started", "WF Creator (Rep)"], ["Billing Set Up", "theclaepie@ausdal.com"], ["Finalized", "System"]], "note": ""}}}, {"id": "m25", "cat": "Other / Record-Keeping / Service Request", "tt": "File Document", "branches": {"": {"wf": "WF11", "stages": [["Started", "WF Creator (Rep)"], ["Finalized", "System"]], "note": "Started straight to Finalized."}}}, {"id": "m26", "cat": "Other / Record-Keeping / Service Request", "tt": "Meeting Notes", "branches": {"": {"wf": "WF11", "stages": [["Started", "WF Creator (Rep)"], ["Finalized", "System"]], "note": "Started straight to Finalized."}}}, {"id": "m27", "cat": "Other / Record-Keeping / Service Request", "tt": "Other: No Signature Required", "branches": {"": {"wf": "WF11", "stages": [["Started", "WF Creator (Rep)"], ["Finalized", "System"]], "note": "Started straight to Finalized \u2014 no back-office stage."}}}, {"id": "m28", "cat": "Account Maintenance", "tt": "Options Agreement", "branches": {"Axos": {"wf": "WF14", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": "Axos and Schwab route to Principal Review 1, not Options Principal Review."}, "Schwab": {"wf": "WF15", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF23", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Options Principal Review", "Timobrien@ausdal.com"], ["Options Set Up", "kimcutkomp@ausdal.com"], ["Pershing Account Follow-up", "pershing_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Any other custodian": {"wf": "\u2014", "stages": null, "note": "Options Agreement applies to Pershing, Axos and Schwab only. There is deliberately no All Others branch \u2014 confirm no dedicated workflow starts."}}}, {"id": "m29", "cat": "Money Movement", "tt": "Account Transfer", "branches": {"Axos": {"wf": "WF14", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF15", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Pershing": {"wf": "WF24", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Back Office Processing", "BackOffice_Processing@ausdal.com"], ["Transfer Follow-up", "transfer_followup@ausdal.com"], ["Finalized", "System"]], "note": "Updated per Maintenance_WFs_-_Changes.xlsx: Front Office Processing \u2192 Back Office Processing."}, "All Others": {"wf": "WF25", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}, {"id": "m30", "cat": "Account Maintenance", "tt": "Client Suitability Profile Update", "branches": {"": {"wf": "WF16", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Finalized", "System"]], "note": ""}}}, {"id": "m31", "cat": "Advisory", "tt": "Risk Tolerance Questionnaire", "branches": {"": {"wf": "WF16", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Finalized", "System"]], "note": ""}}}, {"id": "m32", "cat": "Advisory", "tt": "Advisory Billing Update: Fee Increase", "branches": {"": {"wf": "WF17", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Billing Set Up", "theclaepie@ausdal.com"], ["Finalized", "System"]], "note": "Fee Increase requires a signature; Fee Decrease does not."}}}, {"id": "m33", "cat": "Advisory", "tt": "Advisory Billing Update: Frequency / Method", "branches": {"": {"wf": "WF17", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Billing Set Up", "theclaepie@ausdal.com"], ["Finalized", "System"]], "note": "Skips Back Office Review \u2014 the signature stages converge directly on Billing Set Up."}}}, {"id": "m34", "cat": "Advisory", "tt": "Advisory Annual Review", "branches": {"": {"wf": "WF18", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Finalized", "System"]], "note": ""}}}, {"id": "m35", "cat": "Advisory", "tt": "Financial Plan Documentation", "branches": {"": {"wf": "WF18", "stages": [["Started", "WF Creator (Rep)"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["Principal Review 1", "Designated Supervisor"], ["Finalized", "System"]], "note": ""}}}, {"id": "m36", "cat": "Other / Record-Keeping / Service Request", "tt": "Annuity Delivery Receipt", "branches": {"": {"wf": "WF21", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Finalized", "System"]], "note": "Signature stages then straight to Finalized."}}}, {"id": "m37", "cat": "Other / Record-Keeping / Service Request", "tt": "Other: Signed Documents", "branches": {"": {"wf": "WF21", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Finalized", "System"]], "note": "Signature stages then straight to Finalized \u2014 no Back Office Review."}}}, {"id": "m38", "cat": "Money Movement", "tt": "Wire Request", "branches": {"Pershing": {"wf": "WF28", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["BO Wire Approval", "principal@ausdal.com"], ["Back Office Processing", "BackOffice_Processing@ausdal.com"], ["Cash Management Follow-up", "cash_management@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Axos": {"wf": "WF29", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["BO Wire Approval", "principal@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Axos Follow-up", "axos_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "Schwab": {"wf": "WF30", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["BO Wire Approval", "principal@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Schwab Follow-up", "schwab_followup@ausdal.com"], ["Finalized", "System"]], "note": ""}, "All Others": {"wf": "WF34", "stages": [["Started", "WF Creator (Rep)"], ["Initial Review", "user-level setting"], ["For(E)-Signature", "WF Creator"], ["(E)Signed", "WF Creator"], ["Back Office Review", "BackOffice_Review@ausdal.com"], ["BO Wire Approval", "principal@ausdal.com"], ["Front Office Processing", "WF Creator"], ["Finalized", "System"]], "note": ""}}}];
+const maintProducts = MAINT_DATA.map(d => ({ id: d.id, label: d.cat + ' — ' + d.tt }));
+const maintTriggerDefs = {};
+MAINT_DATA.forEach(d => {
+  const custs = Object.keys(d.branches).filter(c => c !== '');
+  if (custs.length) maintTriggerDefs[d.id] = [{ id:'custodian', question:'When the custodian is:', options: custs }];
+});
 
 // ─── STAGE CONSTANT SHORTCUTS ─────────────────────────────────────────────────
 // Follow-up queue stages for maintenance
@@ -430,393 +360,59 @@ const AA_PAT = { stage:'Pershing Alt Follow-up', assigned:'pershing_followup@aus
 
 // ─── MAINTENANCE WORKFLOW RESOLVER ───────────────────────────────────────────
 function resolveMaintWorkflow() {
-  const p = state.product;
-  const t = state.triggers;
-
-  // Helper: custodian-branching workflow builder
-  function custodianWF(baseName, paths) {
-    const c = t.custodian;
-    if (!c) return null;
-    const path = paths[c] || paths['All Other Custodian / Sponsor / Vendor'] || paths['All Others'];
-    if (!path) return null;
-    return { name: `${baseName} (${c})`, note: '', warning: '', ...path };
-  }
-
-  // ── ACCOUNT MAINTENANCE ───────────────────────────────────────────────────
-
-  // Address Change
-  if (p === 'maint-addr-change') return custodianWF('Account Maintenance — Address Change', {
-    'Pershing':   { stages:[ST,BOR,PAQ,FIN],           assignments:[AA_ST,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,BOR,FOP,FIN], assignments:[AA_ST,AA_BOR,AA_FOP] },
-  });
-
-  // Account Termination/Closure
-  if (p === 'maint-acct-termination') return custodianWF('Account Maintenance — Account Termination / Closure', {
-    'Pershing':   { stages:[ST,BOR,PAQ,FIN],           assignments:[AA_ST,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,BOR,FOP,SCQ,FIN],       assignments:[AA_ST,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,BOR,FOP,FIN], assignments:[AA_ST,AA_BOR,AA_FOP] },
-  });
-
-  // Beneficiary Change
-  if (p === 'maint-beneficiary') return custodianWF('Account Maintenance — Beneficiary Change', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ],
-      warning:'Open item: IRA and/or TOD? Pershing only? Emily says Schwab too — confirm scope before configuring.' },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ],
-      warning:'Open item: IRA and/or TOD? Confirm scope before configuring.' },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ],
-      warning:'Open item: IRA and/or TOD? Confirm scope before configuring.' },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP],
-      warning:'Open item: IRA and/or TOD? Confirm scope before configuring.' },
-  });
-
-  // Change of Registration
-  if (p === 'maint-reg-change') return custodianWF('Account Maintenance — Account Update: Change of Registration', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
-  });
-
-  // Change of Trustee
-  if (p === 'maint-trustee-change') return custodianWF('Account Maintenance — Account Update: Change of Trustee', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
-  });
-
-  // Due to Death
-  if (p === 'maint-death-update') return custodianWF('Account Maintenance — Account Update: Due to Death', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
-  });
-
-  // IRS Form W9
-  if (p === 'maint-w9') return custodianWF('Account Maintenance — IRS Form W9', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
-  });
-
-  // Trusted Contact Person — no custodian question
-  if (p === 'maint-trusted-contact') return {
-    name: 'Account Maintenance — Trusted Contact Person',
-    stages:      [ST,SIG,SGN,BOR,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR],
-    note: ''
+  const d = MAINT_DATA.find(x => x.id === state.product);
+  if (!d) return null;
+  const custs = Object.keys(d.branches).filter(c => c !== '');
+  const key = custs.length ? state.triggers.custodian : '';
+  if (key === undefined) return null;
+  const br = d.branches[key];
+  if (!br) return null;
+  const name = d.cat + ' — ' + d.tt + (key ? ' (' + key + ')' : '');
+  if (!br.stages) return { name, note: br.note, warning: 'No dedicated workflow — routes to the default Ausdal workflow.', stages: [], assignments: [] };
+  const clsFor = label => ({ 'Started':ST.cls, 'Finalized':FIN.cls, 'Back Office Review':BOR.cls, 'Principal Review 1':PR1.cls,
+    'Options Principal Review':OPA.cls, 'Options Set Up':OPS.cls, 'BO Wire Approval':BOW.cls, 'Back Office Processing':BOP.cls,
+    'Front Office Processing':FOP.cls, 'Billing Set Up':BIL.cls, 'For(E)-Signature':SIG.cls, '(E)Signed':SGN.cls })[label] || 'stage-followup';
+  return {
+    name: br.wf + ' — ' + name, note: br.note, warning: '',
+    stages: br.stages.map(([label]) => ({ label, cls: clsFor(label) })),
+    assignments: br.stages.filter(([label]) => label !== 'Finalized').map(([label, who]) => ({ stage: label, assigned: who, tag: 'tag-bo' })),
   };
-
-  // Options Agreement
-  if (p === 'maint-options-agmt') return custodianWF('Account Maintenance — Options Agreement', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,OPA,OPS,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_OPA,AA_OPS,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,FOP,AXQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,FOP,SCQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_SCQ] },
-  });
-
-  // 408b2 — no custodian, no signature, no approval
-  if (p === 'maint-408b2') return {
-    name: 'Account Maintenance — 408b2 Disclosure Document',
-    stages:      [ST,BOR,FIN],
-    assignments: [AA_ST,AA_BOR],
-    note: '408b2 update does not require supervisor approval.',
-    warning: 'Open item: Pershing only — confirm scope before configuring.'
-  };
-
-  // Client Suitability Profile Update
-  if (p === 'maint-suitability') return {
-    name: 'Account Maintenance — Client Suitability Profile Update',
-    stages:      [ST,SIG,SGN,BOR,PR1,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1],
-    note: '',
-    warning: 'Open item: NAF Update or Client Update — needs to trigger update to Maestro data file. Confirm workflow steps needed.'
-  };
-
-  // Online Access — no custodian, signature + BO Review only
-  if (p === 'maint-online-access') return {
-    name: 'Account Maintenance — Online Access Add / Change / Delete',
-    stages:      [ST,SIG,SGN,BOR,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR],
-    note: '',
-    warning: 'Open item: Everything but Pershing — confirm custodian scope.'
-  };
-
-  // Sweep Instructions — Pershing only, no signature
-  if (p === 'maint-sweep') return {
-    name: 'Account Maintenance — Sweep Instruction Updates',
-    stages:      [ST,BOR,FIN],
-    assignments: [AA_ST,AA_BOR],
-    note: 'Pershing only.',
-    warning: 'Open item: Confirm Pershing-only scope before configuring.'
-  };
-
-  // Check-Writing
-  if (p === 'maint-checkwriting') return custodianWF('Account Maintenance — Check-Writing', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ],
-      note:'Pershing only.' },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-    'All Others': { stages:[ST,SIG,SGN,BOR,FOP,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP] },
-  });
-
-  // ── ADVISORY ─────────────────────────────────────────────────────────────
-
-  // Share Class Conversion — no signature, just BO Review + follow-up
-  if (p === 'maint-share-class') return custodianWF('Advisory — Share Class Conversion Requests', {
-    'Pershing':   { stages:[ST,BOR,PAQ,FIN], assignments:[AA_ST,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,BOR,AXQ,FIN], assignments:[AA_ST,AA_BOR,AA_AXQ] },
-    'Schwab':     { stages:[ST,BOR,SCQ,FIN], assignments:[AA_ST,AA_BOR,AA_SCQ] },
-  });
-
-  // Advisory Billing Update — Frequency/Method
-  if (p === 'maint-billing-freq') return {
-    name: 'Advisory — Advisory Billing Update: Frequency / Method',
-    stages:      [ST,SIG,SGN,BIL,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BIL],
-    note: ''
-  };
-
-  // Advisory Billing Update — Exclusions (no signature)
-  if (p === 'maint-billing-excl') return {
-    name: 'Advisory — Advisory Billing Update: Exclusions',
-    stages:      [ST,BIL,FIN],
-    assignments: [AA_ST,AA_BIL],
-    note: ''
-  };
-
-  // Advisory Billing Update — Fee Decrease (no signature)
-  if (p === 'maint-billing-decrease') return {
-    name: 'Advisory — Advisory Billing Update: Fee Decrease',
-    stages:      [ST,BIL,FIN],
-    assignments: [AA_ST,AA_BIL],
-    note: ''
-  };
-
-  // Advisory Billing Update — Fee Increase
-  if (p === 'maint-billing-increase') return {
-    name: 'Advisory — Advisory Billing Update: Fee Increase',
-    stages:      [ST,SIG,SGN,BIL,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BIL],
-    note: ''
-  };
-
-  // Advisory Agreement Termination (no signature)
-  if (p === 'maint-adv-termination') return {
-    name: 'Advisory — Advisory Agreement Termination',
-    stages:      [ST,BIL,FIN],
-    assignments: [AA_ST,AA_BIL],
-    note: ''
-  };
-
-  // Advisory Annual Review
-  if (p === 'maint-annual-review') return {
-    name: 'Advisory — Advisory Annual Review',
-    stages:      [ST,BOR,PR1,FIN],
-    assignments: [AA_ST,AA_BOR,AA_PR1],
-    note: ''
-  };
-
-  // Financial Plan Documentation
-  if (p === 'maint-fin-plan-doc') return {
-    name: 'Advisory — Financial Plan Documentation',
-    stages:      [ST,BOR,PR1,FIN],
-    assignments: [AA_ST,AA_BOR,AA_PR1],
-    note: ''
-  };
-
-  // Risk Tolerance Questionnaire
-  if (p === 'maint-risk-tolerance') return {
-    name: 'Advisory — Risk Tolerance Questionnaire',
-    stages:      [ST,SIG,SGN,BOR,PR1,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1],
-    note: ''
-  };
-
-  // ── MONEY MOVEMENT ────────────────────────────────────────────────────────
-
-  // Account Transfer
-  if (p === 'maint-acct-transfer') return custodianWF('Money Movement — Account Transfer', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PR1,FOP,TFQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_TFQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,PR1,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,FOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_FOP] },
-  });
-
-  // ACH New/Update
-  if (p === 'maint-ach') return custodianWF('Money Movement — ACH New / Update', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],           assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,PR1,BOP,SCQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP,AA_SCQ] },
-    'All Other Custodian / Sponsor / Vendor': { stages:[ST,SIG,SGN,BOR,PR1,BOP,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PR1,AA_BOP] },
-  });
-
-  // Journal
-  if (p === 'maint-journal') return custodianWF('Money Movement — Journal', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAQ,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAQ],
-      warning:'Open item: Account for internal journals — confirm workflow steps.' },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ] },
-  });
-
-  // Wire Request
-  if (p === 'maint-wire') return custodianWF('Money Movement — Wire Request', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,BOW,BOP,CMQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_BOP,AA_CMQ] },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,BOW,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_FOP,AA_AXQ] },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,BOW,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_BOW,AA_FOP,AA_SCQ] },
-  });
-
-  // Deposit/Contribution — no signature
-  if (p === 'maint-deposit') return custodianWF('Money Movement — Deposit / Contribution', {
-    'Pershing':   { stages:[ST,BOR,PMQ,FIN], assignments:[AA_ST,AA_BOR,AA_PMQ],
-      warning:'Open item: No client signatures required — confirm wording. Eventually replace the log in MCO (GOALS).' },
-    'Axos':       { stages:[ST,BOR,AXQ,FIN], assignments:[AA_ST,AA_BOR,AA_AXQ],
-      warning:'Open item: No client signatures required — confirm wording. Eventually replace the log in MCO (GOALS).' },
-    'Schwab':     { stages:[ST,BOR,SCQ,FIN], assignments:[AA_ST,AA_BOR,AA_SCQ],
-      warning:'Open item: No client signatures required — confirm wording. Eventually replace the log in MCO (GOALS).' },
-  });
-
-  // Withdrawal/Distribution — no signature required
-  if (p === 'maint-withdrawal-nosig') return custodianWF('Money Movement — Withdrawal / Distribution (No Signature Required)', {
-    'Pershing':   { stages:[ST,BOR,PMQ,FIN], assignments:[AA_ST,AA_BOR,AA_PMQ],
-      warning:'Open item: Next dropdown — check to address of record, ACH to account on file. Confirm options.' },
-    'Axos':       { stages:[ST,BOR,AXQ,FIN], assignments:[AA_ST,AA_BOR,AA_AXQ],
-      warning:'Open item: Next dropdown — check to address of record, ACH to account on file. Confirm options.' },
-    'Schwab':     { stages:[ST,BOR,SCQ,FIN], assignments:[AA_ST,AA_BOR,AA_SCQ],
-      warning:'Open item: Next dropdown — check to address of record, ACH to account on file. Confirm options.' },
-  });
-
-  // Withdrawal/Distribution — signature required
-  if (p === 'maint-withdrawal-sig') return custodianWF('Money Movement — Withdrawal / Distribution (Signature Required)', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PMQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PMQ],
-      warning:'Open item: IRA distribution — can we point to NetX for check request? Could include LOI for 3rd party check. Confirm wording.' },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,AXQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_AXQ],
-      warning:'Open item: Confirm wording — IRA distribution, LOI for 3rd party check.' },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,SCQ,FIN], assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_SCQ],
-      warning:'Open item: Confirm wording — IRA distribution, LOI for 3rd party check.' },
-  });
-
-  // ── OTHER ─────────────────────────────────────────────────────────────────
-
-  if (p === 'maint-other-nosig') return {
-    name: 'Other — Other: No Signature Required',
-    stages:      [ST,FIN],
-    assignments: [AA_ST],
-    note: '',
-    warning: 'Open item: Confirm whether this includes a workflow or is documentation only.'
-  };
-
-  if (p === 'maint-other-sig') return {
-    name: 'Other — Other: Signed Documents',
-    stages:      [ST,SIG,SGN,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN],
-    note: '',
-    warning: 'Open item: Confirm whether this includes a workflow or is documentation only.'
-  };
-
-  // ── RECORD-KEEPING ────────────────────────────────────────────────────────
-
-  if (p === 'maint-annuity-receipt') return {
-    name: 'Record-Keeping — Annuity Delivery Receipt',
-    stages:      [ST,SIG,SGN,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN],
-    note: ''
-  };
-
-  if (p === 'maint-meeting-notes') return {
-    name: 'Record-Keeping — Meeting Notes',
-    stages:      [ST,FIN],
-    assignments: [AA_ST],
-    note: ''
-  };
-
-  if (p === 'maint-file-doc') return {
-    name: 'Record-Keeping — File Document',
-    stages:      [ST,FIN],
-    assignments: [AA_ST],
-    note: '',
-    warning: 'Open item: Make clear there is no workflow — this is documentation only.'
-  };
-
-  // ── SERVICE REQUESTS ──────────────────────────────────────────────────────
-
-  if (p === 'maint-sig-guarantee') return {
-    name: 'Service Request — Signature Guarantee',
-    stages:      [ST,SIG,SGN,BOR,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR],
-    note: ''
-  };
-
-  if (p === 'maint-trade-correction') return {
-    name: 'Service Request — Trade Correction Request',
-    stages:      [ST,BOR,FIN],
-    assignments: [AA_ST,AA_BOR],
-    note: '',
-    warning: 'Open item: Modify form to say A/B — confirm wording.'
-  };
-
-  // Roth Conversion
-  if (p === 'maint-roth-pershing') return {
-    name: 'Money Movement — Roth Conversion (Pershing)',
-    stages:      [ST,SIG,SGN,BOR,CMQ,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_CMQ],
-    note: ''
-  };
-  if (p === 'maint-roth-axos') return {
-    name: 'Money Movement — Roth Conversion (Axos)',
-    stages:      [ST,SIG,SGN,BOR,FOP,AXQ,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ],
-    note: ''
-  };
-  if (p === 'maint-roth-schwab') return {
-    name: 'Money Movement — Roth Conversion (Schwab)',
-    stages:      [ST,SIG,SGN,BOR,FOP,SCQ,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ],
-    note: ''
-  };
-  if (p === 'maint-roth-others') return {
-    name: 'Money Movement — Roth Conversion (All Other Custodian / Sponsor / Vendor)',
-    stages:      [ST,SIG,SGN,BOR,FOP,FIN],
-    assignments: [AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP],
-    note: ''
-  };
-
-  if (p === 'maint-alt-inv') return custodianWF('Service Request — Alternative Investment Redemption / Reregistration', {
-    'Pershing':   { stages:[ST,SIG,SGN,BOR,PAT,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_PAT],
-      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
-    'Axos':       { stages:[ST,SIG,SGN,BOR,FOP,AXQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_AXQ],
-      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
-    'Schwab':     { stages:[ST,SIG,SGN,BOR,FOP,SCQ,FIN],   assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP,AA_SCQ],
-      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
-    'All Others': { stages:[ST,SIG,SGN,BOR,FOP,FIN],       assignments:[AA_ST,AA_SIG,AA_SGN,AA_BOR,AA_FOP],
-      warning:'Open item: Split into two — one for held directly, one for held at custodian.' },
-  });
-
-  return null;
 }
 
 // ─── TRIGGER DEFINITIONS ─────────────────────────────────────────────────────
-const FUND_STD  = ['Wire from Pershing','Wire Non-Pershing','Check','Transfer','Certificate','Other'];
-const FUND_PERS = ['Wire','Check','Transfer','Certificate','Other'];
-const FUND_BRKG = ['Wire Non-Pershing','Check','Transfer','Certificate','Other'];
+// Funding Type responses. Custodian = Pershing (Pershing Brokerage, Alt Inv at Pershing, AMP/UMA/SMA at Pershing)
+// uses the 7-response list without "Wire from Pershing Account"; everything else uses all 8.
+const FUND_8 = ['IRA/Roth IRA Transfer or Rollover','IRA/Roth IRA Check/Wire/ACH','Wire from Pershing Account','Wire/ACH (non-IRA)','Check (non-IRA)','Transfer (non-IRA)','Certificate (non-IRA)','Other'];
+const FUND_7 = FUND_8.filter(o => o !== 'Wire from Pershing Account');
+const FUND_STD  = FUND_8;
+const FUND_PERS = FUND_7;
+const FUND_BRKG = FUND_7;
+const FUND_TRANSFERS = ['IRA/Roth IRA Transfer or Rollover','Transfer (non-IRA)'];
 // locked:true       = defaulted value; displayed but cannot be changed.
 // accountField:true = value read from the account (platform default field), NOT an index question.
 // noRouting:true    = index question that does not change the stage path (required forms pending).
 const triggerDefs = {
+  'ins-change': [
+    { id:'naf', question:'Does this include a New Account Form (NAF)?', options:['Yes','No'] },
+  ],
   'bd-change': [
     { id:'naf', question:'Does this include a New Account Form (NAF)?', options:['Yes','No'] },
     { id:'accttype', question:'Account type', accountField:true, options:['529 Plan','All Others'],
       showWhen:{ naf:['Yes'] } },
   ],
+  'bd-plansponsor': [
+    { id:'clienttype', question:'Client Type', accountField:true, locked:true, noRouting:true, options:['Entity'] },
+  ],
   'bd-altinv': [
-    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Axos','Any other custodian (e.g., CNB)'] },
-    { id:'funding',   question:'Funding Type', options:FUND_PERS,
-      showWhen:{ custodian:['Pershing'] } },
+    { id:'processas', question:'Process As', accountField:true, defaultValue:'Direct Business', options:['Direct Business','Custodian'] },
+    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Axos','Any other custodian (e.g., CNB)'],
+      showWhen:{ processas:['Custodian'] } },
     { id:'funding',   question:'Funding Type', options:FUND_STD,
-      showWhen:{ custodian:['Any other custodian (e.g., CNB)'] } },
+      showWhen:{ processas:['Direct Business'] } },
+    { id:'funding',   question:'Funding Type', options:FUND_PERS,
+      showWhen:{ processas:['Custodian'], custodian:['Pershing'] } },
+    { id:'funding',   question:'Funding Type', options:FUND_STD,
+      showWhen:{ processas:['Custodian'], custodian:['Any other custodian (e.g., CNB)'] } },
     { id:'ex1031',    question:'Is this a 1031 Exchange?', options:['Yes','No'], noRouting:true },
   ],
   'bd-mutfund': [
@@ -834,7 +430,7 @@ const triggerDefs = {
   ],
   'adv-afp': [
     { id:'program', question:'Second-Level Transaction Type', navButton:true, options:['Advisor Managed Portfolio (AMP)','Held Away Assets','Qualified Plan Management','529 Plan','Variable Annuity'] },
-    { id:'vendor', question:'Vendor/Product (filtered list)', accountField:true, options:['Jackson National','Nationwide','Prudential','Lincoln'],
+    { id:'vendor', question:'Vendor/Product (filtered list)', accountField:true, options:['Jackson National','Nationwide Annuities','Nationwide Advisory Solutions','Prudential Annuities','Lincoln Financial – Annuities'],
       showWhen:{ program:['Variable Annuity'] } },
     { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Schwab','Axos'],
       showWhen:{ program:['Advisor Managed Portfolio (AMP)'] } },
@@ -862,8 +458,10 @@ const triggerDefs = {
     { id:'program',   question:'Second-Level Transaction Type', navButton:true, options:['Unified Managed Account (UMA)','Separately Managed Account (SMA)','Third Party / Solicitor'] },
     { id:'processas', question:'Process As', accountField:true, locked:true, options:['Custodian'],
       showWhen:{ program:['Unified Managed Account (UMA)','Separately Managed Account (SMA)','Third Party / Solicitor'] } },
-    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Schwab','Axos','Any other custodian (e.g., CNB)'],
-      showWhen:{ program:['Unified Managed Account (UMA)','Separately Managed Account (SMA)'] } },
+    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Schwab','Axos','Goldman Sachs'],
+      showWhen:{ program:['Unified Managed Account (UMA)'] } },
+    { id:'custodian', question:'Custodian', accountField:true, options:['Pershing','Schwab','Axos'],
+      showWhen:{ program:['Separately Managed Account (SMA)'] } },
     { id:'custodian', question:'Custodian', accountField:true, locked:true, options:['Schwab'],
       showWhen:{ program:['Third Party / Solicitor'] } },
     { id:'manager', question:'Select Manager', locked:true, options:['Churchill Management Group'],
@@ -881,7 +479,7 @@ const triggerDefs = {
       showWhen:{ program:['Adhesion','Orion Portfolio Solutions'] } },
     { id:'custodian', question:'Custodian', accountField:true, noRouting:true, options:['AssetMark','Pershing','Schwab'],
       showWhen:{ program:['AssetMark'] } },
-    { id:'custodian', question:'Custodian', accountField:true, noRouting:true, options:['Schwab','Goldman'],
+    { id:'custodian', question:'Custodian', accountField:true, noRouting:true, options:['Schwab','Goldman Sachs'],
       showWhen:{ program:['GeoWealth'] } },
   ],
 };
@@ -898,8 +496,8 @@ const PR1 = { label:'Principal Review 1',     cls:'stage-approval'   };
 const OPA = { label:'Options Principal Review',cls:'stage-approval'  };
 const MPA = { label:'Municipal Principal Review',cls:'stage-approval'};
 const BOW = { label:'BO Wire Approval',       cls:'stage-wire'       };
-const FOP = { label:'FO Processing',          cls:'stage-processing' };
-const BOP = { label:'BO Processing',          cls:'stage-processing' };
+const FOP = { label:'Front Office Processing',          cls:'stage-processing' };
+const BOP = { label:'Back Office Processing',          cls:'stage-processing' };
 const OPS = { label:'Options Set Up',         cls:'stage-processing' };
 const BIL = { label:'Billing Set Up',         cls:'stage-billing'    };
 const FIN = { label:'Finalized',              cls:'stage-final'      };
@@ -921,8 +519,8 @@ const AA_OPA  = { stage:'Options Principal Review',   assigned:'Timobrien@ausdal
 const AA_MPA  = { stage:'Municipal Principal Review', assigned:'Municipalprincipal@ausdal.com',     tag:'tag-bo'   };
 const AA_PR1M = { stage:'Principal Review 1',         assigned:'Municipalprincipal@ausdal.com', tag:'tag-bo' };
 const AA_BOW  = { stage:'BO Wire Approval',           assigned:'principal@ausdal.com', tag:'tag-bo' };
-const AA_FOP  = { stage:'FO Processing',              assigned:'WF Creator',            tag:'tag-fo'    };
-const AA_BOP  = { stage:'BO Processing',              assigned:'BackOffice_Processing@ausdal.com',             tag:'tag-bo'    };
+const AA_FOP  = { stage:'Front Office Processing',              assigned:'WF Creator',            tag:'tag-fo'    };
+const AA_BOP  = { stage:'Back Office Processing',              assigned:'BackOffice_Processing@ausdal.com',             tag:'tag-bo'    };
 const AA_OPS  = { stage:'Options Set Up',             assigned:'kimcutkomp@ausdal.com',       tag:'tag-bo'    };
 const AA_BIL  = { stage:'Billing Set Up',             assigned:'theclaepie@ausdal.com', tag:'tag-bo'    };
 const AA_BDQ  = { stage:'BD Change Follow-up',        assigned:'BD_change@ausdal.com',         tag:'tag-bo'    };
@@ -989,49 +587,65 @@ function resolveWorkflow() {
   }
 
   if (p === 'bd-altinv') {
+    if (!t.processas) return null;
+    if (t.processas === 'Direct Business') {
+      if (!t.funding) return null;
+      if (t.funding === 'Wire from Pershing Account') return {
+        name: 'BD — Alternative Investment (Direct Business · Wire from Pershing)',
+        stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
+        note: 'Process As = Direct Business (default). BO Wire Approval added.'
+      };
+      return {
+        name: 'BD — Alternative Investment (Direct Business)',
+        stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, FIN],
+        assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP],
+        note: 'Process As = Direct Business (default). Back Office Processing before Front Office Processing.'
+      };
+    }
     if (!t.custodian) return null;
-    const wire = t.funding === 'Wire from Pershing' || (t.custodian === 'Pershing' && t.funding === 'Wire');
+    const wire = t.custodian !== 'Pershing' && t.funding === 'Wire from Pershing Account';
     // Axos — no funding question, resolves immediately
     if (t.custodian === 'Axos') return {
       name: 'BD — Alternative Investment (Axos)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, AXQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP, AA_AXQ],
-      note: 'BO Processing before FO Processing.'
+      note: 'Back Office Processing before Front Office Processing.'
     };
     if (!t.funding) return null;
     if (t.custodian === 'Pershing' && wire) return {
       name: 'BD — Alternative Investment (Pershing · Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
-      note: 'BO Wire Approval added. BO Processing before FO Processing.'
+      note: 'BO Wire Approval added. Back Office Processing before Front Office Processing.'
     };
     if (t.custodian === 'Pershing' && !wire) return {
       name: 'BD — Alternative Investment (Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, PAL, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP, AA_PAL],
-      note: 'BO Processing before FO Processing.'
+      note: 'Back Office Processing before Front Office Processing.'
     };
     if (wire) return {
       name: 'BD — Alternative Investment (Any Other Custodian · Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
-      note: 'BO Wire Approval added. BO Processing before FO Processing.'
+      note: 'BO Wire Approval added. Back Office Processing before Front Office Processing.'
     };
     return {
       name: 'BD — Alternative Investment (Any Other Custodian)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOP, FOP, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_FOP],
-      note: 'Catch-all: any custodian other than Pershing or Axos. BO Processing before FO Processing. No custodian-specific follow-up queue.'
+      note: 'Catch-all: any custodian other than Pershing or Axos. Back Office Processing before Front Office Processing. No custodian-specific follow-up queue.'
     };
   }
 
   if (p === 'bd-mutfund') {
     if (!t.funding) return null;
-    if (t.funding === 'Wire from Pershing') return {
+    if (t.funding === 'Wire from Pershing Account') return {
       name: 'BD — Mutual Fund (Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
-      note: 'BO Wire Approval added. BO Processing before FO Processing.'
+      note: 'BO Wire Approval added. Back Office Processing before Front Office Processing.'
     };
     return {
       name: 'BD — Mutual Fund',
@@ -1043,11 +657,11 @@ function resolveWorkflow() {
 
   if (p === 'bd-va') {
     if (!t.funding) return null;
-    if (t.funding === 'Wire from Pershing') return {
+    if (t.funding === 'Wire from Pershing Account') return {
       name: 'BD — Variable Annuity / RILA / VUL (Wire from Pershing)',
       stages:      [ST, SIG, SGN, BOR, PR1, BOW, BOP, FOP, CMQ, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOW, AA_BOP, AA_FOP, AA_CMQ],
-      note: 'BO Wire Approval added. BO Processing before FO Processing.'
+      note: 'BO Wire Approval added. Back Office Processing before Front Office Processing.'
     };
     return {
       name: 'BD — Variable Annuity / RILA / VUL',
@@ -1060,7 +674,7 @@ function resolveWorkflow() {
   if (p === 'bd-brokerage') {
     if (!t.options || !t.funding) return null;
     const hasOpts = t.options === 'Yes';
-    const hasXfer = t.funding === 'Transfer';
+    const hasXfer = FUND_TRANSFERS.includes(t.funding);
     if (hasOpts && hasXfer) return {
       name: 'BD — Pershing Brokerage (Options + Transfer)',
       stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, PAQ, TRQ, FIN],
@@ -1092,6 +706,13 @@ function resolveWorkflow() {
     stages:      [ST, SIG, SGN, BOR, MPA, FOP, FIN],
     assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_MPA, AA_FOP],
     note: 'Municipal Principal approval required.'
+  };
+
+  if (p === 'bd-plansponsor') return {
+    name: 'BD — Plan Sponsor (WORKFLOW TBD)',
+    stages:      [ST, FIN],
+    assignments: [AA_ST],
+    note: 'Workflow path, index questions and stage assignees are TBD — pending Ausdal (Michelle). Client Type is always Entity.'
   };
 
   if (p === 'bd-other') return {
@@ -1154,7 +775,7 @@ function resolveWorkflow() {
     if (t.custodian === 'Pershing') {
       if (!t.options || !t.funding) return null;
       const hasOpts = t.options === 'Yes';
-      const hasXfer = t.funding === 'Transfer';
+      const hasXfer = FUND_TRANSFERS.includes(t.funding);
       if (hasOpts && hasXfer) return {
         name: `Advisory — AFP ${prog} Pershing (Options + Transfer)`,
         stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, BIL, PAQ, TRQ, FIN],
@@ -1216,7 +837,7 @@ function resolveWorkflow() {
     if (t.custodian === 'Pershing') {
       if (!t.options || !t.funding) return null;
       const hasOpts = t.options === 'Yes';
-      const hasXfer = t.funding === 'Transfer';
+      const hasXfer = FUND_TRANSFERS.includes(t.funding);
       if (hasOpts && hasXfer) return {
         name: `Advisory — ${prog} Pershing (Options + Transfer)`,
         stages:      [ST, SIG, SGN, BOR, OPA, OPS, BOP, BIL, PAQ, TRQ, FIN],
@@ -1254,13 +875,14 @@ function resolveWorkflow() {
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL, AA_AXQ],
       note: 'Billing Set Up owner TBD.'
     };
-    // Catch-all: any custodian other than Pershing, Schwab or Axos (includes Goldman Sachs)
-    return {
-      name: `Advisory — ${prog} (Any Other Custodian)`,
+    // Goldman Sachs (UMA only)
+    if (t.custodian === 'Goldman Sachs') return {
+      name: `Advisory — ${prog} Goldman Sachs`,
       stages:      [ST, SIG, SGN, BOR, PR1, BOP, BIL, FIN],
       assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BIL],
-      note: 'Catch-all: any custodian other than Pershing, Schwab or Axos (includes Goldman Sachs). Billing Set Up confirmed required.'
+      note: 'Goldman Sachs is offered on UMA only. Billing Set Up confirmed required (known expected difference: live code has no Billing Set Up yet).'
     };
+    return null;
   }
 
   if (p === 'adv-tamp') {
@@ -1283,7 +905,7 @@ function resolveWorkflow() {
     name: 'Advisory — Financial Planning',
     stages:      [ST, SIG, SGN, BOR, PR1, BIL, FIN],
     assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BIL],
-    note: 'No FO or BO Processing stage. Process As, Custodian, Vendor and Account Category are not displayed.'
+    note: 'No Front Office or Back Office Processing stage. Process As, Custodian, Vendor and Account Category are not displayed.'
   };
 
   // ══ INSURANCE ════════════════════════════════════════════════════════════════
@@ -1302,19 +924,21 @@ function resolveWorkflow() {
     note: ''
   };
 
-  if (p === 'ins-change') return {
-    name: 'Insurance — Broker/Dealer Change',
-    stages:      [ST, SIG, SGN, BOR, BOP, BDQ, FIN],
-    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_BOP, AA_BDQ],
-    note: 'No approval stage.'
-  };
-
-  if (p === 'ins-change-naf') return {
-    name: 'Insurance — Broker/Dealer Change w/NAF',
-    stages:      [ST, SIG, SGN, BOR, PR1, BOP, BDQ, FIN],
-    assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BDQ],
-    note: 'Designated Supervisor approval required.'
-  };
+  if (p === 'ins-change') {
+    if (!t.naf) return null;
+    if (t.naf === 'No') return {
+      name: 'Insurance — Broker/Dealer Change',
+      stages:      [ST, SIG, SGN, BOR, BOP, BDQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_BOP, AA_BDQ],
+      note: 'No approval stage.'
+    };
+    return {
+      name: 'Insurance — Broker/Dealer Change w/NAF',
+      stages:      [ST, SIG, SGN, BOR, PR1, BOP, BDQ, FIN],
+      assignments: [AA_ST, AA_SIG, AA_SGN, AA_BOR, AA_PR1, AA_BOP, AA_BDQ],
+      note: 'Designated Supervisor approval required.'
+    };
+  }
 
   return null;
 }
@@ -1365,8 +989,110 @@ function selectProduct(prodId, prodLabel) {
 }
 
 // Retirement rollover/transfer question — asked for every New Account relationship and transaction type (drives forms only)
-const ROLLOVER_Q = { id:'rollover', question:'Is this a retirement to retirement rollover or transfer?', options:['Yes','No'], noRouting:true };
-Object.values(products).flat().forEach(p => { (triggerDefs[p.id] = triggerDefs[p.id] || []).push(ROLLOVER_Q); });
+// Client Type (platform field, Individual / Entity) on every New Account workflow — drives forms only.
+const CLIENT_TYPE = { id:'clienttype', question:'Client Type', accountField:true, noRouting:true, options:['Individual','Entity'] };
+Object.values(products).flat().forEach(p => {
+  const defs = (triggerDefs[p.id] = triggerDefs[p.id] || []);
+  if (!defs.some(d => d.id === 'clienttype')) defs.unshift(CLIENT_TYPE);
+});
+
+// Process As defaults (Broker/Dealer: Direct Business except Pershing Brokerage; Insurance: Direct). Forms only here.
+const PROCESS_AS_DIRECT = { id:'processas', question:'Process As', accountField:true, noRouting:true, defaultValue:'Direct Business', options:['Direct Business','Custodian'] };
+['bd-change','bd-mutfund','bd-va','bd-529','bd-other','ins-imo','ins-docs','ins-change'].forEach(id => triggerDefs[id].splice(1, 0, PROCESS_AS_DIRECT));
+
+// "Is this a custodial account?" (Yes / No) — shown when Client Type = Individual (ticket #10470 item 1). Forms only.
+const CUSTODIAL = (extra) => ({ id:'custodial', question:'Is this a custodial account?', options:['Yes','No'], noRouting:true,
+  showWhen: Object.assign({ clienttype:['Individual'] }, extra || {}) });
+['bd-change','bd-altinv','bd-mutfund','bd-va','bd-brokerage','bd-other',
+ 'adv-tpmm','adv-tamp','adv-fp','ins-imo','ins-docs','ins-change'].forEach(id => triggerDefs[id].push(CUSTODIAL()));
+triggerDefs['adv-afp'].push(CUSTODIAL({ program:['Advisor Managed Portfolio (AMP)','Held Away Assets','Variable Annuity'] }));
+
+// "Is this a 1035 Exchange?" on FIA (ticket #10470 item 3). Forms only.
+['ins-imo','ins-docs'].forEach(id => triggerDefs[id].push({ id:'ex1035', question:'Is this a 1035 Exchange?', options:['Yes','No'], noRouting:true }));
+
+// Funding Type on every New Account workflow. Where a routing Funding Type question isn't shown,
+// this forms-only version (all 8 responses) is shown instead.
+const GENERIC_FUNDING = { id:'funding', question:'Funding Type', options:FUND_8, noRouting:true, genericFunding:true };
+Object.values(products).flat().filter(p => !['bd-change','ins-change','bd-plansponsor'].includes(p.id)).forEach(p => { (triggerDefs[p.id] = triggerDefs[p.id] || []).push(GENERIC_FUNDING); });
+
+
+// ─── REQUIRED FORMS (Ausdal_Required_Forms_11-18-26 spreadsheet; form ID TBD shown as TBD) ───────────
+const REQUIRED_FORMS = [{"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "NAF question: no forms tied (tracking only)."}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": "Also requires Account type = All Others (account field)"}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "not when Account type = 529 Plan"}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - 529", "num": "99688", "nc": "Required", "ec": "", "ct": "Any", "q": "accttype", "qlabel": "Account type (shown when NAF = Yes)", "ans": ["529 Plan"], "note": ""}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": "Also requires Account type = All Others (account field)"}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Broker-Dealer Change Authorization People", "num": "100000", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Broker-Dealer Change Authorization Entity", "num": "99999", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "Illiquid Investment Information", "num": "83615", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "1031 Exchange Info", "num": "85527", "nc": "Required", "ec": "Required", "ct": "Any", "q": "ex1031", "qlabel": "Is this a 1031 Exchange?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Pershing", "name": "Pershing Alternative Investment Purchase Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Axos uses the matrix \"custodian not equal Pershing\" row."}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "Illiquid Investment Information", "num": "83615", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "1031 Exchange Info", "num": "85527", "nc": "Required", "ec": "Required", "ct": "Any", "q": "ex1031", "qlabel": "Is this a 1031 Exchange?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Alternative Investment", "sec": "", "cust": "Axos / Any other custodian", "name": "Fed Fund Wire Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["Wire from Pershing Account"], "note": "Funding Type is not asked for Axos today \u2013 add it there"}, {"rel": "bd", "tt": "529 Plan", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "529 Plan", "sec": "", "cust": "", "name": "New Account - 529", "num": "99688", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "529 Plan", "sec": "", "cust": "", "name": "529 Information/Disclosure", "num": "85528", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "529 Plan", "sec": "", "cust": "", "name": "Fed Fund Wire Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["Wire from Pershing Account"], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "Mutual Fund/UIT Information", "num": "83613", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Mutual Fund", "sec": "", "cust": "", "name": "Fed Fund Wire Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["Wire from Pershing Account"], "note": ""}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "VA/RILA and Variable Life matrix rows merged into one product; VA Information and VUL Information are both Optional."}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Variable Annuity Information", "num": "85554", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Optional: keep VA Information for VA/RILA, VUL Information for VUL"}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Annuity Replacement", "num": "85530", "nc": "Required", "ec": "Required", "ct": "Any", "q": "ex1035", "qlabel": "Is this a 1035 Exchange?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Variable Universal Life Information", "num": "85555", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Optional: keep VA Information for VA/RILA, VUL Information for VUL"}, {"rel": "bd", "tt": "Variable Annuity / RILA / VUL", "sec": "", "cust": "", "name": "Fed Fund Wire Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["Wire from Pershing Account"], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Options question drives no forms."}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Pershing Asset Journal Authorization", "num": "85546", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Pershing Information", "num": "91633", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Pershing Brokerage", "sec": "", "cust": "Pershing", "name": "Annuity Replacement", "num": "85530", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "bd", "tt": "Other Business", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "bd", "tt": "Plan Sponsor", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "NEW PRODUCT (not in the current build). | New product. Wizard fields and workflow path to be defined."}, {"rel": "bd", "tt": "Plan Sponsor", "sec": "", "cust": "", "name": "New Account - Qualified Plan", "num": "99692", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "feetype", "qlabel": "Account Fee Type", "ans": ["Non Wrap (Transaction Fees Additional)"], "note": "Options and Discretion drive no forms. | Client note: includes Fidelity 403b"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "feetype", "qlabel": "Account Fee Type", "ans": ["Wrap (Transaction Fees Included)"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Advisor-Managed Account Agreement (IAPA)", "num": "100301", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Pershing", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Client note: includes Fidelity 403b"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Advisor-Managed Account Agreement (IAPA)", "num": "100301", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Schwab", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Client note: includes Fidelity 403b"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Advisor-Managed Account Agreement (IAPA)", "num": "100301", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Advisor Managed Portfolio (AMP)", "cust": "Axos", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Held-Away Account Agreement (IAPA)", "num": "100298", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Held Away Assets", "cust": "Fidelity / Other (Pontera, ByAllAccounts)", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "Investment Advisory Agreement - Qualified Plan", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Client note: May be combined with 408b2"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "408(b)(2) Disclosure", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "New Account - Qualified Plan", "num": "99692", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Qualified Plan Management", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "529 Plan", "cust": "", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "529 Plan", "cust": "", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "529 Plan", "cust": "", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "529 Plan", "cust": "", "name": "Investment Advisory Services Agreement", "num": "100296", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "529 Plan", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "529 Plan", "cust": "", "name": "New Account - 529", "num": "99688", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Investment Advisory Services Agreement", "num": "100296", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Variable Annuity Fee Authorization Addendum", "num": "100297", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Jackson National", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Wrap not available for this program"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Investment Advisory Services Agreement", "num": "100296", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Advisor Managed", "sec": "Variable Annuity", "cust": "Nationwide / Prudential / Lincoln", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Wrap Fee Brochure", "num": "100302", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Options and Select Manager drive no forms."}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Third-Party Managed Account Agreement (IAPA)", "num": "100300", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Pershing", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Third-Party Managed Account Agreement (IAPA)", "num": "100300", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Schwab", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Third-Party Managed Account Agreement (IAPA)", "num": "100300", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Axos", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "UMA / SMA", "cust": "Any other custodian (CNB, Goldman Sachs)", "name": "(no forms assigned)", "num": "", "nc": "", "ec": "", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "No forms assigned per matrix."}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Solicitor-Promoter Disclosure & Client Acknow", "num": "100299", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "AFP Third Party Managed", "sec": "Third Party / Solicitor", "cust": "Schwab", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "TAMP", "sec": "Adhesion", "cust": "Schwab", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "Investment Advisory Services Agreement", "num": "100296", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "TAMP", "sec": "Orion Portfolio Solutions", "cust": "Schwab", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Investment Advisory Services Agreement", "num": "100296", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "TAMP", "sec": "AssetMark", "cust": "AssetMark / Pershing / Schwab", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Build gives custodian Schwab / Goldman; matrix listed none."}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Risk Tolerance Questionnaire", "num": "85543", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Investment Advisory Services Agreement", "num": "100296", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "TAMP", "sec": "GeoWealth", "cust": "Schwab / Goldman", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "Financial Planning and Consulting Services Agr", "num": "100304", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Build hides account fields, but the matrix assigns NAFs, IRA Information and Fi360."}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "Form ADV Part 2A", "num": "100303", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "adv", "tt": "Financial Planning", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Same Ausdal forms as FIA Direct (separate workflow paths)."}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Fixed Annuity Information", "num": "96752", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Fed Fund Wire Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["Wire from Pershing Account"], "note": ""}, {"rel": "ins", "tt": "FIA (Through IMO)", "sec": "", "cust": "", "name": "Annuity Replacement", "num": "85530", "nc": "Required", "ec": "Required", "ct": "Any", "q": "ex1035", "qlabel": "Is this a 1035 Exchange?", "ans": ["Yes"], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Form CRS and Disclosure", "num": "90914", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "Same Ausdal forms as FIA (Through IMO) (separate workflow paths)."}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "IRA Information", "num": "83614", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover", "IRA/Roth IRA Check/Wire/ACH"], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Fi360 Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["IRA/Roth IRA Transfer or Rollover"], "note": "Client note: Form pending; not in this ticket. Trigger question is in place."}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Fixed Annuity Information", "num": "96752", "nc": "Required", "ec": "Required", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Fed Fund Wire Form", "num": "TBD", "nc": "Required", "ec": "Required", "ct": "Any", "q": "funding", "qlabel": "Funding Type", "ans": ["Wire from Pershing Account"], "note": ""}, {"rel": "ins", "tt": "FIA Direct", "sec": "", "cust": "", "name": "Annuity Replacement", "num": "85530", "nc": "Required", "ec": "Required", "ct": "Any", "q": "ex1035", "qlabel": "Is this a 1035 Exchange?", "ans": ["Yes"], "note": ""}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - Person", "num": "99691", "nc": "Required", "ec": "", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["No"], "note": ""}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - Entity", "num": "99690", "nc": "Required", "ec": "", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "New Account - UGMA/UTMA/ESA/Custodial", "num": "99689", "nc": "Required", "ec": "", "ct": "Individual", "q": "custodial", "qlabel": "Is this a custodial account?", "ans": ["Yes"], "note": ""}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Certification of Beneficial Owners", "num": "85533", "nc": "Optional", "ec": "", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Optional for entity accounts"}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Trust Agreement Prompt", "num": "TBD", "nc": "Optional", "ec": "Optional", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": "Cover sheet; optional for entity accounts (remove if not a trust)"}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Broker-Dealer Change Authorization People", "num": "100000", "nc": "Required", "ec": "Required", "ct": "Individual", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "Broker/Dealer Change", "sec": "", "cust": "", "name": "Broker-Dealer Change Authorization Entity", "num": "99999", "nc": "Required", "ec": "Required", "ct": "Entity", "q": "", "qlabel": "", "ans": [], "note": ""}, {"rel": "ins", "tt": "Broker/Dealer Change w/NAF", "sec": "", "cust": "", "name": "(no forms assigned)", "num": "", "nc": "", "ec": "", "ct": "Any", "q": "", "qlabel": "", "ans": [], "note": "No forms assigned per matrix."}];
+const CLIENT_STATUS = { id:'clientstatus', question:'New or Existing Client', accountField:true, noRouting:true, options:['New Client','Existing Client'] };
+Object.values(products).flat().forEach(p => { triggerDefs[p.id].unshift(CLIENT_STATUS); });
+
+function effectiveAnswers() {
+  const eff = Object.assign({}, state.triggers);
+  (triggerDefs[state.product] || []).forEach(d => {
+    if (d.locked && isVisible(d) && eff[d.id] === undefined) eff[d.id] = d.options[0];
+  });
+  if (state.product === 'bd-brokerage') eff.custodian = 'Pershing';
+  return eff;
+}
+function formPathMatches(row, eff) {
+  const prod = (products[state.rel] || []).find(p => p.id === state.product);
+  if (!prod || row.rel !== state.rel) return false;
+  const tt = row.tt === 'TAMP' ? 'Turnkey Asset Management Platform (TAMP)' : row.tt === 'Broker/Dealer Change w/NAF' ? 'Broker/Dealer Change' : row.tt;
+  if (tt !== prod.label) return false;
+  if (row.tt === 'Broker/Dealer Change w/NAF' && eff.naf !== 'Yes') return false;
+  if (row.sec) {
+    const progs = row.sec === 'UMA / SMA' ? ['Unified Managed Account (UMA)','Separately Managed Account (SMA)'] : [row.sec];
+    if (!progs.includes(eff.program)) return false;
+  }
+  switch (row.cust) {
+    case '': case 'Fidelity / Other (Pontera, ByAllAccounts)': case 'AssetMark / Pershing / Schwab': case 'Schwab / Goldman': return true;
+    case 'Axos / Any other custodian': return eff.processas !== 'Direct Business' && ['Axos','Any other custodian (e.g., CNB)'].includes(eff.custodian);
+    case 'Jackson National': return eff.vendor === 'Jackson National';
+    case 'Nationwide / Prudential / Lincoln': return !!eff.vendor && eff.vendor !== 'Jackson National';
+    case 'Any other custodian (CNB, Goldman Sachs)': return eff.custodian === 'Goldman Sachs';
+    default: return eff.custodian === row.cust;
+  }
+}
+function requiredForms() {
+  const eff = effectiveAnswers();
+  const status = eff.clientstatus;
+  const res = { req: [], opt: [], pending: [] };
+  REQUIRED_FORMS.forEach(row => {
+    if (row.num === 'TBD') return;   // #10470 item 6: ignore where form ID = TBD
+    if (!formPathMatches(row, eff)) return;
+    const conds = [];
+    let level;
+    if (status) { level = status === 'Existing Client' ? row.ec : row.nc; if (!level) return; }
+    else if (row.nc && row.nc === row.ec) level = row.nc;
+    else { level = row.nc || row.ec; conds.push('New or Existing Client = ' + (row.nc && row.ec ? 'New Client (' + row.nc + ') / Existing Client (' + row.ec + ')' : row.nc ? 'New Client' : 'Existing Client')); }
+    if (row.ct !== 'Any') {
+      if (!eff.clienttype) conds.push('Client Type = ' + row.ct);
+      else if (eff.clienttype !== row.ct) return;
+    }
+    // Conditions written in the spreadsheet's Notes column (B/D Broker/Dealer Change)
+    if (row.rel === 'bd' && row.tt === 'Broker/Dealer Change') {
+      if (['New Account - Person','New Account - UGMA/UTMA/ESA/Custodial'].includes(row.name)) {
+        if (eff.naf === 'No') return;
+        if (eff.naf === undefined) conds.push('NAF = Yes');
+        if (eff.accttype === undefined) conds.push('Account type = All Others');
+        else if (eff.accttype !== 'All Others') return;
+      }
+      if (row.name === 'New Account - Entity' && eff.accttype === '529 Plan') return;
+    }
+    if (row.q) {
+      if (row.q === 'accttype' && eff.naf === 'No') return;
+      const a = eff[row.q];
+      if (a === undefined) conds.push(row.qlabel + ' = ' + row.ans.join(' or '));
+      else if (!row.ans.includes(a)) return;
+    }
+    const item = { row, level };
+    if (conds.length) { item.conds = conds; res.pending.push(item); }
+    else (level === 'Required' ? res.req : res.opt).push(item);
+  });
+  return res;
+}
+function formsHTML() {
+  const f = requiredForms();
+  const li = it => `<tr><td>${it.row.name}</td><td>${it.row.num === 'TBD' ? '<em style="color:#a0aec0">TBD</em>' : it.row.num}</td><td>${it.conds ? it.level + ' if ' + it.conds.join(' and ') : ''}${it.row.note ? `<div style="font-size:11px;color:#718096">${it.row.note}</div>` : ''}</td></tr>`;
+  const table = (title, items) => items.length ? `<div class="result-section-label">${title}</div><table class="assign-table"><thead><tr><th>Form</th><th>Form #</th><th>Notes</th></tr></thead><tbody>${items.map(li).join('')}</tbody></table>` : '';
+  const none = !f.req.length && !f.opt.length && !f.pending.length ? '<div class="result-section-label">Forms</div><div class="result-note">No forms listed for this selection.</div>' : '';
+  return table('Required Forms', f.req) + table('Optional Forms', f.opt) + table('Depends on an answer not yet given', f.pending) + none;
+}
 
 // ─── NAVIGATION BUTTONS (Program / Company) ──────────────────────────────────
 function hideNav() {
@@ -1374,8 +1100,7 @@ function hideNav() {
 }
 function isVisible(trig) {
   if (!trig.showWhen) return true;
-  const key = Object.keys(trig.showWhen)[0];
-  return trig.showWhen[key].includes(state.triggers[key]);
+  return Object.keys(trig.showWhen).every(k => trig.showWhen[k].includes(state.triggers[k]));
 }
 function renderNav(triggers) {
   hideNav();
@@ -1407,9 +1132,9 @@ function renderTriggers(triggers) {
   let shown = 0;
   triggers.forEach(trig => {
     if (trig.navButton) return;
+    if (trig.genericFunding && triggers.some(o => o.id === 'funding' && !o.genericFunding && isVisible(o))) return;
     if (trig.showWhen) {
-      const key = Object.keys(trig.showWhen)[0];
-      if (!trig.showWhen[key].includes(state.triggers[key])) return;
+      if (!Object.keys(trig.showWhen).every(k => trig.showWhen[k].includes(state.triggers[k]))) return;
     }
     shown++;
     if (trig.defaultValue && state.triggers[trig.id] === undefined) state.triggers[trig.id] = trig.defaultValue;
@@ -1444,7 +1169,7 @@ function renderTriggers(triggers) {
 function selectTrigger(trigId, value, allTriggers) {
   state.triggers[trigId] = value;
   allTriggers.forEach(t => {
-    if (t.showWhen && Object.keys(t.showWhen)[0] === trigId) delete state.triggers[t.id];
+    if (t.showWhen && Object.keys(t.showWhen).includes(trigId)) delete state.triggers[t.id];
   });
   renderTriggers(allTriggers);
   const wf = resolveWorkflow();
@@ -1480,6 +1205,7 @@ function renderResult() {
     ${stageHTML}
     <div class="result-section-label">Stage Assignments</div>
     ${assignHTML}
+    ${workflowType === 'nao' ? formsHTML() : ''}
   `;
 }
 
